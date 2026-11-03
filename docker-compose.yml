@@ -1,0 +1,65 @@
+# Local development stack. Copy .env.example to .env first. See README.md.
+services:
+  mongo:
+    image: mongo:7
+    command: ["--replSet", "rs0", "--bind_ip_all"]
+    volumes:
+      - mongo-data:/data/db
+    ports:
+      - "127.0.0.1:27017:27017"
+    # Also initialises the single-node replica set that transactions require.
+    healthcheck:
+      test: >
+        mongosh --quiet --eval "try { rs.status().ok } catch (e) { rs.initiate({ _id: 'rs0', members: [{ _id: 0, host: 'mongo:27017' }] }).ok }"
+      interval: 5s
+      timeout: 10s
+      retries: 20
+      start_period: 5s
+
+  backend:
+    build: ./backend
+    depends_on:
+      mongo:
+        condition: service_healthy
+    environment: &backend-env
+      NODE_ENV: ${APP_ENV:-development}
+      PORT: 4000
+      TRUST_PROXY: 1
+      MONGODB_URI: mongodb://mongo:27017/sas3d_crm?replicaSet=rs0
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:?Set BETTER_AUTH_SECRET in .env}
+      BETTER_AUTH_URL: http://localhost:3000
+      FRONTEND_URL: http://localhost:3000
+      RESEND_API_KEY: ${RESEND_API_KEY:-}
+      EMAIL_FROM: ${EMAIL_FROM:-SAS3D CRM <crm@sas3d.in>}
+      SEED_ADMIN_EMAIL: ${SEED_ADMIN_EMAIL:-}
+      SEED_ADMIN_PASSWORD: ${SEED_ADMIN_PASSWORD:-}
+      SEED_ADMIN_NAME: ${SEED_ADMIN_NAME:-SAS3D Owner}
+      UPLOAD_DIR: /app/uploads
+    volumes:
+      - uploads:/app/uploads
+    ports:
+      - "127.0.0.1:4000:4000"
+
+  # Run once: docker compose run --rm seed
+  seed:
+    build: ./backend
+    profiles: ["tools"]
+    depends_on:
+      mongo:
+        condition: service_healthy
+    environment: *backend-env
+    command: ["node", "dist/database/seed.js"]
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        BACKEND_URL: http://backend:4000
+    depends_on:
+      - backend
+    ports:
+      - "127.0.0.1:3000:3000"
+
+volumes:
+  mongo-data:
+  uploads:
