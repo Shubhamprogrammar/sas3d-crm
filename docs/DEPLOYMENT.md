@@ -1,5 +1,5 @@
 # Deployment
-shubham
+
 The recommended setup is the frontend on Vercel, the API on Render or another Node host, and the database on MongoDB Atlas. This configuration has been tested with Docker Compose and in production mode locally. It has not been deployed to these hosted services, so run the checklist below after your first deployment.
 
 ## 1. Database: MongoDB Atlas
