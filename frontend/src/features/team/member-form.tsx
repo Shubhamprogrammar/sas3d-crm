@@ -59,7 +59,7 @@ export function MemberForm({
         role: (member?.role ?? "DEVELOPER") as Values["role"],
         designation: member?.designation ?? "",
         joiningDate: dayInput(member?.joiningDate),
-        skills: member?.skills.join(", ") ?? "",
+        skills: member?.skills?.join(", ") ?? "",
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, member]);

@@ -90,7 +90,7 @@ export default function TeamMemberPage() {
               { label: "Designation", value: member.designation },
               { label: "Phone", value: member.phone },
               { label: "Joined", value: format.day(member.joiningDate) },
-              { label: "Skills", value: member.skills.join(", ") },
+              { label: "Skills", value: member.skills?.join(", ") },
             ]}
           />
         </Card>

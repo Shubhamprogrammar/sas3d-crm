@@ -390,6 +390,42 @@ describe("access control", () => {
         .status,
     ).toBe(409);
   });
+
+  it("stores profile fields on the account it provisions", async () => {
+    const { agent } = await ctx.login("ADMIN");
+    const body = {
+      password: "long-enough-password",
+      role: "DEVELOPER",
+    };
+    const full = await agent.post("/api/v1/team").send({
+      ...body,
+      name: "Full",
+      email: "full-member@example.com",
+      phone: "+15550100",
+      designation: "Modeller",
+      joiningDate: "2026-01-15",
+      skills: ["Blender", "CAD"],
+    });
+    expect(full.status).toBe(201);
+    const stored = (await agent.get(`/api/v1/team/${full.body.data._id}`)).body.data;
+    expect(stored).toMatchObject({
+      phone: "+15550100",
+      designation: "Modeller",
+      skills: ["Blender", "CAD"],
+    });
+    expect(new Date(stored.joiningDate).toISOString().slice(0, 10)).toBe("2026-01-15");
+
+    const bare = await agent
+      .post("/api/v1/team")
+      .send({ ...body, name: "Bare", email: "bare-member@example.com" });
+    expect(bare.status).toBe(201);
+    expect((await agent.get(`/api/v1/team/${bare.body.data._id}`)).body.data).toMatchObject({
+      phone: "",
+      designation: "",
+      joiningDate: null,
+      skills: [],
+    });
+  });
 });
 
 describe("tasks", () => {

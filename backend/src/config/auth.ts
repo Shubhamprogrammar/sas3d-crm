@@ -41,6 +41,13 @@ function createAuth() {
         // input:false stops clients from setting these through any Better Auth endpoint.
         role: { type: "string", required: false, defaultValue: "DEVELOPER", input: false },
         status: { type: "string", required: false, defaultValue: "ACTIVE", input: false },
+        // The adapter drops any field not declared here, so provisionUser's values depend on these.
+        // returned:false keeps profile data out of session responses; /me serves it instead.
+        phone: { type: "string", required: false, input: false, returned: false },
+        designation: { type: "string", required: false, input: false, returned: false },
+        joiningDate: { type: "date", required: false, input: false, returned: false },
+        skills: { type: "string[]", required: false, input: false, returned: false },
+        mutedNotifications: { type: "string[]", required: false, input: false, returned: false },
       },
     },
     session: {
