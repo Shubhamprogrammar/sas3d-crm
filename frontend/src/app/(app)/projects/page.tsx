@@ -71,7 +71,9 @@ export default function ProjectsPage() {
       header: "Expected delivery",
       sortKey: "expectedDeliveryDate",
       render: (p) => (
-        <span className="whitespace-nowrap">{format.day(p.expectedDeliveryDate)}</span>
+        <span className="whitespace-nowrap">
+          <span className="font-mono">{format.day(p.expectedDeliveryDate)}</span>
+        </span>
       ),
     },
   ];

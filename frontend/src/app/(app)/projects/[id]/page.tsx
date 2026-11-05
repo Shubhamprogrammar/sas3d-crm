@@ -177,13 +177,19 @@ export default function ProjectDetailPage() {
                 {
                   label: "Budget",
                   value: project.budget ? formatMoney(project.budget, project.currency) : "",
+                  mono: true,
                   hidden: role === "DEVELOPER",
                 },
-                { label: "Start date", value: format.day(project.startDate) },
-                { label: "Expected delivery", value: format.day(project.expectedDeliveryDate) },
+                { label: "Start date", value: format.day(project.startDate), mono: true },
+                {
+                  label: "Expected delivery",
+                  value: format.day(project.expectedDeliveryDate),
+                  mono: true,
+                },
                 {
                   label: "Completed",
                   value: format.day(project.actualCompletionDate),
+                  mono: true,
                   hidden: !project.actualCompletionDate,
                 },
                 { label: "Project manager", value: <UserChip user={project.projectManager} /> },

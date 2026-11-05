@@ -66,7 +66,11 @@ export default function ClientsPage() {
       key: "last",
       header: "Last interaction",
       sortKey: "lastInteractionAt",
-      render: (c) => <span className="whitespace-nowrap">{format.date(c.lastInteractionAt)}</span>,
+      render: (c) => (
+        <span className="whitespace-nowrap">
+          <span className="font-mono">{format.date(c.lastInteractionAt)}</span>
+        </span>
+      ),
     },
   ];
 

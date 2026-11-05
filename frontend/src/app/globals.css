@@ -23,7 +23,9 @@
   --side-text: #171717;
   --side-text-2: #525252;
   --side-hover: rgb(23 23 23 / 0.05);
-  --side-active: rgb(23 23 23 / 0.08);
+  --side-active: #ffffff;
+  --side-active-end: #fafafa;
+  --side-highlight: transparent;
   --good: #14733f;
   --good-soft: #e4f4ea;
   --warn: #8a5a00;
@@ -37,7 +39,6 @@
   --shadow: 0 1px 2px rgb(0 0 0 / 0.05);
   --shadow-lg: 0 12px 32px rgb(0 0 0 / 0.14);
   --shadow-sheet: 0 8px 24px rgb(0 0 0 / 0.16);
-  /* The drawn invoice is real paper, so it stays the same in both themes. */
   --paper: #fbfaf7;
   --paper-back: #e9e7e1;
   --paper-ink: #1c1c1e;
@@ -66,7 +67,9 @@
   --side-text: #ededed;
   --side-text-2: #a1a1a6;
   --side-hover: rgb(237 237 237 / 0.05);
-  --side-active: #232325;
+  --side-active: #2b2b2d;
+  --side-active-end: #1f1f21;
+  --side-highlight: rgb(255 255 255 / 0.08);
   --good: #5fce8f;
   --good-soft: #15301f;
   --warn: #e6b34d;
@@ -80,6 +83,11 @@
   --shadow: 0 0 #0000;
   --shadow-lg: 0 12px 32px rgb(0 0 0 / 0.5);
   --shadow-sheet: 0 12px 32px rgb(0 0 0 / 0.5);
+  --paper: #333336;
+  --paper-back: #1f1f21;
+  --paper-ink: #ededed;
+  --paper-muted: #a1a1a6;
+  --paper-line: rgb(237 237 237 / 0.16);
 }
 
 @theme inline {
@@ -117,6 +125,7 @@
   --color-side-text-2: var(--side-text-2);
   --color-side-hover: var(--side-hover);
   --color-side-active: var(--side-active);
+  --color-side-active-end: var(--side-active-end);
   --shadow-card: var(--shadow);
   --shadow-pop: var(--shadow-lg);
   --shadow-sheet: var(--shadow-sheet);
@@ -147,6 +156,101 @@ body {
 
 .tabular {
   font-variant-numeric: tabular-nums;
+}
+
+svg.lucide {
+  stroke-width: 1.5;
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+  accent-color: var(--accent);
+}
+
+/* Styles the real select list, so keyboard use and forms are unchanged. Other browsers show their own. */
+@supports (appearance: base-select) {
+  .ui-select,
+  .ui-select::picker(select) {
+    appearance: base-select;
+  }
+
+  .ui-select {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  .ui-select::picker-icon {
+    display: none;
+  }
+
+  .ui-select::picker(select) {
+    min-width: anchor-size(width);
+    max-height: 320px;
+    margin-block: 4px;
+    padding: 4px;
+    overflow-y: auto;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: 12px;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .ui-select option {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    min-height: 32px;
+    padding-inline: 8px;
+    font-size: 13px;
+    white-space: nowrap;
+    color: var(--text-2);
+    cursor: pointer;
+    border-radius: 8px;
+  }
+
+  .ui-select option:hover,
+  .ui-select option:focus-visible {
+    color: var(--text);
+    background: var(--surface-2);
+    outline: none;
+  }
+
+  .ui-select option:checked {
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .ui-select option::checkmark {
+    order: 1;
+    margin-inline-start: auto;
+    color: var(--accent);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .ui-select::picker(select) {
+      opacity: 0;
+      transform: translateY(-4px);
+      transition:
+        opacity 160ms cubic-bezier(0.22, 1, 0.36, 1),
+        transform 160ms cubic-bezier(0.22, 1, 0.36, 1),
+        display 160ms allow-discrete,
+        overlay 160ms allow-discrete;
+    }
+
+    .ui-select:open::picker(select) {
+      opacity: 1;
+      transform: none;
+    }
+
+    @starting-style {
+      .ui-select:open::picker(select) {
+        opacity: 0;
+        transform: translateY(-4px);
+      }
+    }
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

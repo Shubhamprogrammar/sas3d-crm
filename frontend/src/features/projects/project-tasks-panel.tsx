@@ -259,7 +259,9 @@ export function ProjectTasksPanel({
                 {task.title}
               </span>
               <UserChip user={task.assignedTo} />
-              <span className="tabular text-xs text-ink-2">{format.day(task.dueDate)}</span>
+              <span className="tabular text-xs text-ink-2">
+                <span className="font-mono">{format.day(task.dueDate)}</span>
+              </span>
               <StatusBadge status={task.status} />
               {editable(task) && (
                 <Dropdown

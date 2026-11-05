@@ -1,7 +1,7 @@
 "use client";
 
 import { Table2 } from "lucide-react";
-import { useState, type ReactNode } from "react";
+import { useId, useState, type ReactNode } from "react";
 import {
   Area,
   AreaChart,
@@ -35,7 +35,7 @@ function ChartTooltip({
   return (
     <div className="rounded-lg border border-line bg-surface px-2.5 py-1.5 text-xs shadow-pop">
       <p className="text-ink-2">{heading}</p>
-      <p className="tabular font-medium text-ink">{format(Number(value))}</p>
+      <p className="tabular font-mono font-medium text-ink">{format(Number(value))}</p>
     </div>
   );
 }
@@ -68,10 +68,10 @@ export function ChartCard({
   const [asTable, setAsTable] = useState(false);
   return (
     <section
-      className={`min-w-0 rounded-xl border border-line bg-surface shadow-card ${className}`}
+      className={`min-w-0 rounded-2xl border border-line bg-surface shadow-card ${className}`}
     >
       <header className="flex items-center justify-between gap-2 px-4 pb-1 pt-3">
-        <h2 className="font-medium">{title}</h2>
+        <h2 className="text-ink-2">{title}</h2>
         <div className="flex items-center gap-1.5">
           {action}
           <Button
@@ -99,7 +99,7 @@ export function ChartCard({
               {rows.map((row) => (
                 <tr key={row.label} className="border-t border-line">
                   <td className="py-1">{row.label}</td>
-                  <td className="text-right">{format(row.value)}</td>
+                  <td className="text-right font-mono">{format(row.value)}</td>
                 </tr>
               ))}
             </tbody>
@@ -235,9 +235,16 @@ export function TimeArea({
   rows: ChartRow[];
   format?: (value: number) => string;
 }) {
+  const fadeId = `area-fade-${useId().replace(/\W/g, "")}`;
   return (
     <ResponsiveContainer width="100%" height="100%">
       <AreaChart data={rows} margin={{ top: 8, right: 28, bottom: 0, left: -12 }}>
+        <defs>
+          <linearGradient id={fadeId} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor="var(--accent)" stopOpacity={0.24} />
+            <stop offset="1" stopColor="var(--accent)" stopOpacity={0} />
+          </linearGradient>
+        </defs>
         <CartesianGrid vertical={false} stroke="var(--border)" />
         <XAxis
           dataKey="label"
@@ -267,9 +274,8 @@ export function TimeArea({
           type="monotone"
           dataKey="value"
           stroke="var(--accent)"
-          strokeWidth={2.5}
-          fill="var(--accent)"
-          fillOpacity={0.14}
+          strokeWidth={2}
+          fill={`url(#${fadeId})`}
           dot={rows.length === 1 ? { r: 4, fill: "var(--accent)" } : false}
           activeDot={{ r: 4, stroke: "var(--surface)", strokeWidth: 2 }}
           isAnimationActive={false}

@@ -92,7 +92,7 @@ export function NotificationBell() {
                     <span className="block text-[13px] font-medium">{item.title}</span>
                     <span className="block truncate text-xs text-ink-2">{item.message}</span>
                     <span className="block text-xs text-ink-3">
-                      {format.dateTime(item.createdAt)}
+                      <span className="font-mono">{format.dateTime(item.createdAt)}</span>
                     </span>
                   </span>
                 </button>

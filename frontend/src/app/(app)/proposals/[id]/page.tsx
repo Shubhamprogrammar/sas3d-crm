@@ -215,10 +215,14 @@ export default function ProposalDetailPage() {
                           <td className="py-2 pr-3">{item.description}</td>
                           <td className="text-right">{item.quantity}</td>
                           <td className="whitespace-nowrap text-right">
-                            {formatMoney(item.unitPrice, proposal.currency)}
+                            <span className="font-mono">
+                              {formatMoney(item.unitPrice, proposal.currency)}
+                            </span>
                           </td>
                           <td className="whitespace-nowrap text-right">
-                            {formatMoney(item.amount, proposal.currency)}
+                            <span className="font-mono">
+                              {formatMoney(item.amount, proposal.currency)}
+                            </span>
                           </td>
                         </tr>
                       ))}
@@ -227,12 +231,21 @@ export default function ProposalDetailPage() {
                   <dl className="tabular ml-auto mt-3 w-72 max-w-full space-y-1 text-[13px]">
                     <div className="flex justify-between">
                       <dt className="text-ink-2">Subtotal</dt>
-                      <dd>{formatMoney(proposal.subtotal, proposal.currency)}</dd>
+                      <dd>
+                        <span className="font-mono">
+                          {formatMoney(proposal.subtotal, proposal.currency)}
+                        </span>
+                      </dd>
                     </div>
                     {proposal.discountAmount > 0 && (
                       <div className="flex justify-between">
                         <dt className="text-ink-2">Discount</dt>
-                        <dd>-{formatMoney(proposal.discountAmount, proposal.currency)}</dd>
+                        <dd>
+                          -
+                          <span className="font-mono">
+                            {formatMoney(proposal.discountAmount, proposal.currency)}
+                          </span>
+                        </dd>
                       </div>
                     )}
                     {proposal.taxRateBp > 0 && (
@@ -240,12 +253,20 @@ export default function ProposalDetailPage() {
                         <dt className="text-ink-2">
                           {proposal.taxLabel} ({bpToPercent(proposal.taxRateBp)}%)
                         </dt>
-                        <dd>{formatMoney(proposal.taxAmount, proposal.currency)}</dd>
+                        <dd>
+                          <span className="font-mono">
+                            {formatMoney(proposal.taxAmount, proposal.currency)}
+                          </span>
+                        </dd>
                       </div>
                     )}
                     <div className="flex justify-between border-t border-line-strong pt-1 text-base font-semibold">
                       <dt>Total</dt>
-                      <dd>{formatMoney(proposal.total, proposal.currency)}</dd>
+                      <dd>
+                        <span className="font-mono">
+                          {formatMoney(proposal.total, proposal.currency)}
+                        </span>
+                      </dd>
                     </div>
                   </dl>
                 </div>
@@ -279,11 +300,13 @@ export default function ProposalDetailPage() {
                     </p>
                     <p className="text-xs text-ink-3">
                       Replaced by {revision.changedBy?.name} on{" "}
-                      {format.dateTime(revision.createdAt)}
+                      <span className="font-mono">{format.dateTime(revision.createdAt)}</span>
                     </p>
                   </div>
                   <span className="tabular">
-                    {formatMoney(revision.snapshot.total, revision.snapshot.currency)}
+                    <span className="font-mono">
+                      {formatMoney(revision.snapshot.total, revision.snapshot.currency)}
+                    </span>
                   </span>
                 </li>
               ))}
@@ -317,20 +340,24 @@ export default function ProposalDetailPage() {
                 label: "Total",
                 value: (
                   <span className="tabular font-medium">
-                    {formatMoney(proposal.total, proposal.currency)}
+                    <span className="font-mono">
+                      {formatMoney(proposal.total, proposal.currency)}
+                    </span>
                   </span>
                 ),
               },
-              { label: "Valid until", value: format.day(proposal.validUntil) },
-              { label: "Sent", value: format.dateTime(proposal.sentAt) },
+              { label: "Valid until", value: format.day(proposal.validUntil), mono: true },
+              { label: "Sent", value: format.dateTime(proposal.sentAt), mono: true },
               {
                 label: "Accepted",
                 value: format.dateTime(proposal.acceptedAt),
+                mono: true,
                 hidden: !proposal.acceptedAt,
               },
               {
                 label: "Rejected",
                 value: format.dateTime(proposal.rejectedAt),
+                mono: true,
                 hidden: !proposal.rejectedAt,
               },
               { label: "Created by", value: proposal.createdBy?.name },

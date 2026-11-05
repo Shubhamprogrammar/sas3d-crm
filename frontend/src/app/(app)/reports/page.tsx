@@ -34,7 +34,7 @@ function Tile({ title, value }: { title: string; value: string | number }) {
   return (
     <Card>
       <p className="text-xs text-ink-2">{title}</p>
-      <p className="tabular mt-1 text-3xl font-medium">{value}</p>
+      <p className="tabular mt-1 text-2xl font-normal">{value}</p>
     </Card>
   );
 }
@@ -168,19 +168,31 @@ function FinanceReport({ params }: { params: object }) {
               key: "i",
               header: "Invoiced",
               align: "right",
-              render: (r) => formatMoney(r.invoiced, r.currency),
+              render: (r) => (
+                <span className="font-mono">
+                  <span className="font-mono">{formatMoney(r.invoiced, r.currency)}</span>
+                </span>
+              ),
             },
             {
               key: "p",
               header: "Collected",
               align: "right",
-              render: (r) => formatMoney(r.collected, r.currency),
+              render: (r) => (
+                <span className="font-mono">
+                  <span className="font-mono">{formatMoney(r.collected, r.currency)}</span>
+                </span>
+              ),
             },
             {
               key: "o",
               header: "Outstanding (today)",
               align: "right",
-              render: (r) => formatMoney(r.outstanding, r.currency),
+              render: (r) => (
+                <span className="font-mono">
+                  <span className="font-mono">{formatMoney(r.outstanding, r.currency)}</span>
+                </span>
+              ),
             },
           ]}
         />
@@ -218,13 +230,21 @@ function FinanceReport({ params }: { params: object }) {
               key: "i",
               header: "Invoiced",
               align: "right",
-              render: (r) => formatMoney(r.invoiced, r.currency),
+              render: (r) => (
+                <span className="font-mono">
+                  <span className="font-mono">{formatMoney(r.invoiced, r.currency)}</span>
+                </span>
+              ),
             },
             {
               key: "o",
               header: "Outstanding",
               align: "right",
-              render: (r) => formatMoney(r.outstanding, r.currency),
+              render: (r) => (
+                <span className="font-mono">
+                  <span className="font-mono">{formatMoney(r.outstanding, r.currency)}</span>
+                </span>
+              ),
             },
           ]}
         />
@@ -249,7 +269,11 @@ function FinanceReport({ params }: { params: object }) {
               {
                 key: "d",
                 header: "Due",
-                render: (r) => <span className="whitespace-nowrap">{format.day(r.dueDate)}</span>,
+                render: (r) => (
+                  <span className="whitespace-nowrap">
+                    <span className="font-mono">{format.day(r.dueDate)}</span>
+                  </span>
+                ),
               },
               { key: "s", header: "Status", render: (r) => <StatusBadge status={r.status} /> },
               {
@@ -257,7 +281,9 @@ function FinanceReport({ params }: { params: object }) {
                 header: "Balance",
                 align: "right",
                 render: (r) => (
-                  <span className="whitespace-nowrap">{formatMoney(r.amountDue, r.currency)}</span>
+                  <span className="whitespace-nowrap">
+                    <span className="font-mono">{formatMoney(r.amountDue, r.currency)}</span>
+                  </span>
                 ),
               },
             ]}
@@ -273,7 +299,9 @@ function FinanceReport({ params }: { params: object }) {
                 key: "d",
                 header: "Date",
                 render: (r) => (
-                  <span className="whitespace-nowrap">{format.day(r.paymentDate)}</span>
+                  <span className="whitespace-nowrap">
+                    <span className="font-mono">{format.day(r.paymentDate)}</span>
+                  </span>
                 ),
               },
               {
@@ -292,7 +320,9 @@ function FinanceReport({ params }: { params: object }) {
                 header: "Amount",
                 align: "right",
                 render: (r) => (
-                  <span className="whitespace-nowrap">{formatMoney(r.amount, r.currency)}</span>
+                  <span className="whitespace-nowrap">
+                    <span className="font-mono">{formatMoney(r.amount, r.currency)}</span>
+                  </span>
                 ),
               },
             ]}
@@ -367,7 +397,9 @@ function ProjectsReport({ params }: { params: object }) {
                 key: "d",
                 header: "Expected",
                 render: (r) => (
-                  <span className="whitespace-nowrap">{format.day(r.expectedDeliveryDate)}</span>
+                  <span className="whitespace-nowrap">
+                    <span className="font-mono">{format.day(r.expectedDeliveryDate)}</span>
+                  </span>
                 ),
               },
             ]}

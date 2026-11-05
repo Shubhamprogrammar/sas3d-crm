@@ -263,16 +263,19 @@ export default function LeadDetailPage() {
                   value: lead.estimatedBudget
                     ? formatMoney(lead.estimatedBudget, lead.budgetCurrency)
                     : "",
+                  mono: true,
                 },
                 { label: "Assigned to", value: <UserChip user={lead.assignedTo} /> },
-                { label: "Created", value: format.date(lead.createdAt) },
+                { label: "Created", value: format.date(lead.createdAt), mono: true },
                 {
                   label: "Last contacted",
                   value: format.dateTime(lead.lastContactedAt, lead.timezone),
+                  mono: true,
                 },
                 {
                   label: "Next follow-up",
                   value: format.dateTime(lead.nextFollowUpAt, lead.timezone),
+                  mono: true,
                 },
               ]}
             />

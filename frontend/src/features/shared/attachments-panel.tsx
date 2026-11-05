@@ -90,7 +90,8 @@ export function AttachmentsPanel({
               <div className="min-w-0 flex-1">
                 <p className="truncate font-medium">{file.filename}</p>
                 <p className="text-xs text-ink-3">
-                  {fileSize(file.size)} · {file.uploadedBy?.name} · {format.date(file.createdAt)}
+                  {fileSize(file.size)} · {file.uploadedBy?.name} ·{" "}
+                  <span className="font-mono">{format.date(file.createdAt)}</span>
                 </p>
               </div>
               <Button

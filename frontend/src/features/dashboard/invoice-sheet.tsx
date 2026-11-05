@@ -22,7 +22,7 @@ export function InvoiceSheet({ invoice }: { invoice?: OpenInvoice }) {
             <p className="mt-1 font-mono text-xs text-paper-muted">{invoice.number}</p>
             <p className="mt-4 truncate text-xs text-paper-muted">{invoice.client?.name}</p>
             <p className="tabular mt-1 text-sm font-medium">
-              {formatMoney(invoice.amountDue, invoice.currency)}
+              <span className="font-mono">{formatMoney(invoice.amountDue, invoice.currency)}</span>
             </p>
           </>
         ) : (

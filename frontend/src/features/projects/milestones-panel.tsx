@@ -158,7 +158,7 @@ export function MilestonesPanel({ project, canManage }: { project: string; canMa
                 {milestone.description && (
                   <p className="text-[13px] text-ink-2">{milestone.description}</p>
                 )}
-                <p className="text-xs text-ink-3">
+                <p className="font-mono text-xs text-ink-3">
                   {[
                     milestone.startDate && `Starts ${format.day(milestone.startDate)}`,
                     milestone.dueDate && `Due ${format.day(milestone.dueDate)}`,

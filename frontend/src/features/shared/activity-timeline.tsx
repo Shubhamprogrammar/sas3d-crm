@@ -196,10 +196,16 @@ export function ActivityTimeline({
                     </p>
                   )}
                   <p className="mt-0.5 text-xs text-ink-3">
-                    {item.actor?.name ?? "System"} · {format.dateTime(item.occurredAt, timezone)}
-                    {item.nextFollowUpAt
-                      ? ` · Follow up ${format.dateTime(item.nextFollowUpAt, timezone)}`
-                      : ""}
+                    {item.actor?.name ?? "System"} ·{" "}
+                    <span className="font-mono">{format.dateTime(item.occurredAt, timezone)}</span>
+                    {item.nextFollowUpAt ? (
+                      <span className="font-mono">
+                        {" "}
+                        · Follow up {format.dateTime(item.nextFollowUpAt, timezone)}
+                      </span>
+                    ) : (
+                      ""
+                    )}
                   </p>
                 </div>
               </li>

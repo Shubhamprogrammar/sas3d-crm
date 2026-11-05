@@ -18,11 +18,11 @@ import { Button } from "./button";
 type Tone = "neutral" | "good" | "warn" | "bad" | "info";
 
 const TONES: Record<Tone, string> = {
-  neutral: "bg-neutral-soft text-ink-2",
-  good: "bg-good-soft text-good",
-  warn: "bg-warn-soft text-warn",
-  bad: "bg-bad-soft text-bad",
-  info: "bg-info-soft text-info",
+  neutral: "bg-ink-3",
+  good: "bg-good",
+  warn: "bg-warn",
+  bad: "bg-bad",
+  info: "bg-info",
 };
 
 const STATUS_TONES: Record<string, Tone> = {
@@ -55,9 +55,11 @@ const STATUS_TONES: Record<string, Tone> = {
 
 export function StatusBadge({ status, tone }: { status: string; tone?: Tone }) {
   return (
-    <span
-      className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-md px-2 py-0.5 text-xs font-medium ${TONES[tone ?? STATUS_TONES[status] ?? "neutral"]}`}
-    >
+    <span className="inline-flex items-center gap-1.5 whitespace-nowrap text-xs text-ink-2">
+      <span
+        className={`size-1.5 shrink-0 rounded-full ${TONES[tone ?? STATUS_TONES[status] ?? "neutral"]}`}
+        aria-hidden
+      />
       {label(status)}
     </span>
   );
@@ -401,10 +403,10 @@ export function Card({
   padded?: boolean;
 }) {
   return (
-    <section className={`rounded-xl border border-line bg-surface shadow-card ${className}`}>
+    <section className={`rounded-2xl border border-line bg-surface shadow-card ${className}`}>
       {(title || action) && (
         <header className="flex items-center justify-between gap-3 border-b border-line px-4 py-3">
-          {title && <h2 className="font-medium">{title}</h2>}
+          {title && <h2 className="text-ink-2">{title}</h2>}
           {action}
         </header>
       )}
@@ -437,7 +439,7 @@ export function PageHeader({
       )}
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
-          <h1 className="text-2xl font-medium">{title}</h1>
+          <h1 className="text-3xl font-normal">{title}</h1>
           {description && <div className="mt-1 text-[13px] text-ink-2">{description}</div>}
         </div>
         {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
@@ -449,7 +451,7 @@ export function PageHeader({
 export function DetailList({
   items,
 }: {
-  items: { label: string; value: ReactNode; hidden?: boolean }[];
+  items: { label: string; value: ReactNode; hidden?: boolean; mono?: boolean }[];
 }) {
   return (
     <dl className="grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2">
@@ -458,7 +460,7 @@ export function DetailList({
         .map((item) => (
           <div key={item.label} className="min-w-0">
             <dt className="text-xs text-ink-3">{item.label}</dt>
-            <dd className="mt-0.5 break-words">
+            <dd className={`mt-0.5 break-words ${item.mono ? "font-mono" : ""}`}>
               {item.value || <span className="text-ink-3">Not set</span>}
             </dd>
           </div>
@@ -479,7 +481,7 @@ export function ProgressBar({ value }: { value: number }) {
       <div className="h-1 flex-1 overflow-hidden rounded-full bg-neutral-soft">
         <div className="h-full rounded-full bg-accent" style={{ width: `${value}%` }} />
       </div>
-      <span className="tabular w-9 text-right text-xs text-ink-2">{value}%</span>
+      <span className="tabular w-9 text-right font-mono text-xs text-ink-2">{value}%</span>
     </div>
   );
 }

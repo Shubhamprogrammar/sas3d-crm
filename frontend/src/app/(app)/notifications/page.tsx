@@ -92,7 +92,7 @@ export default function NotificationsPage() {
                     </span>
                     <span className="block text-[13px] text-ink-2">{item.message}</span>
                     <span className="block text-xs text-ink-3">
-                      {format.dateTime(item.createdAt)}
+                      <span className="font-mono">{format.dateTime(item.createdAt)}</span>
                     </span>
                   </span>
                 </button>

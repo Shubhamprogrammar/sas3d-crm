@@ -77,7 +77,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
 ) {
   return (
     <div className={`relative ${className}`}>
-      <select ref={ref} className={`h-9 appearance-none pr-8 ${CONTROL}`} {...rest}>
+      <select ref={ref} className={`ui-select h-9 appearance-none pr-8 ${CONTROL}`} {...rest}>
         {placeholder !== undefined && <option value="">{placeholder}</option>}
         {options.map((option) => (
           <option key={option.value} value={option.value}>

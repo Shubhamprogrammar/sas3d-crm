@@ -316,10 +316,14 @@ export default function InvoiceDetailPage() {
                       <td className="py-2 pr-3">{item.description}</td>
                       <td className="text-right">{item.quantity}</td>
                       <td className="whitespace-nowrap text-right">
-                        {formatMoney(item.unitPrice, invoice.currency)}
+                        <span className="font-mono">
+                          {formatMoney(item.unitPrice, invoice.currency)}
+                        </span>
                       </td>
                       <td className="whitespace-nowrap text-right">
-                        {formatMoney(item.amount, invoice.currency)}
+                        <span className="font-mono">
+                          {formatMoney(item.amount, invoice.currency)}
+                        </span>
                       </td>
                     </tr>
                   ))}
@@ -328,12 +332,21 @@ export default function InvoiceDetailPage() {
               <dl className="tabular ml-auto mt-3 w-72 max-w-full space-y-1 text-[13px]">
                 <div className="flex justify-between">
                   <dt className="text-ink-2">Subtotal</dt>
-                  <dd>{formatMoney(invoice.subtotal, invoice.currency)}</dd>
+                  <dd>
+                    <span className="font-mono">
+                      {formatMoney(invoice.subtotal, invoice.currency)}
+                    </span>
+                  </dd>
                 </div>
                 {invoice.discountAmount > 0 && (
                   <div className="flex justify-between">
                     <dt className="text-ink-2">Discount</dt>
-                    <dd>-{formatMoney(invoice.discountAmount, invoice.currency)}</dd>
+                    <dd>
+                      -
+                      <span className="font-mono">
+                        {formatMoney(invoice.discountAmount, invoice.currency)}
+                      </span>
+                    </dd>
                   </div>
                 )}
                 {invoice.taxRateBp > 0 && (
@@ -341,21 +354,35 @@ export default function InvoiceDetailPage() {
                     <dt className="text-ink-2">
                       {invoice.taxLabel} ({bpToPercent(invoice.taxRateBp)}%)
                     </dt>
-                    <dd>{formatMoney(invoice.taxAmount, invoice.currency)}</dd>
+                    <dd>
+                      <span className="font-mono">
+                        {formatMoney(invoice.taxAmount, invoice.currency)}
+                      </span>
+                    </dd>
                   </div>
                 )}
                 <div className="flex justify-between border-t border-line-strong pt-1 font-semibold">
                   <dt>Total</dt>
-                  <dd>{formatMoney(invoice.total, invoice.currency)}</dd>
+                  <dd>
+                    <span className="font-mono">
+                      {formatMoney(invoice.total, invoice.currency)}
+                    </span>
+                  </dd>
                 </div>
                 <div className="flex justify-between">
                   <dt className="text-ink-2">Amount paid</dt>
-                  <dd>{formatMoney(invoice.amountPaid, invoice.currency)}</dd>
+                  <dd>
+                    <span className="font-mono">
+                      {formatMoney(invoice.amountPaid, invoice.currency)}
+                    </span>
+                  </dd>
                 </div>
                 <div className="flex justify-between border-t border-line-strong pt-1 text-base font-semibold">
                   <dt>Balance due</dt>
                   <dd data-testid="balance-due">
-                    {formatMoney(invoice.amountDue, invoice.currency)}
+                    <span className="font-mono">
+                      {formatMoney(invoice.amountDue, invoice.currency)}
+                    </span>
                   </dd>
                 </div>
               </dl>
@@ -372,10 +399,13 @@ export default function InvoiceDetailPage() {
                       <p
                         className={`tabular font-medium ${payment.voidedAt ? "text-ink-3 line-through" : ""}`}
                       >
-                        {formatMoney(payment.amount, payment.currency)}
+                        <span className="font-mono">
+                          {formatMoney(payment.amount, payment.currency)}
+                        </span>
                       </p>
                       <p className="text-xs text-ink-3">
-                        {format.day(payment.paymentDate)} · {label(payment.method)}
+                        <span className="font-mono">{format.day(payment.paymentDate)}</span> ·{" "}
+                        {label(payment.method)}
                         {payment.transactionReference
                           ? ` · ${payment.transactionReference}`
                           : ""} · {payment.recordedBy?.name}
@@ -420,9 +450,9 @@ export default function InvoiceDetailPage() {
                   </Link>
                 ),
               },
-              { label: "Issue date", value: format.day(invoice.issueDate) },
-              { label: "Due date", value: format.day(invoice.dueDate) },
-              { label: "Sent", value: format.dateTime(invoice.sentAt) },
+              { label: "Issue date", value: format.day(invoice.issueDate), mono: true },
+              { label: "Due date", value: format.day(invoice.dueDate), mono: true },
+              { label: "Sent", value: format.dateTime(invoice.sentAt), mono: true },
               { label: "Currency", value: invoice.currency },
             ]}
           />

@@ -89,7 +89,7 @@ export default function TeamMemberPage() {
             items={[
               { label: "Designation", value: member.designation },
               { label: "Phone", value: member.phone },
-              { label: "Joined", value: format.day(member.joiningDate) },
+              { label: "Joined", value: format.day(member.joiningDate), mono: true },
               { label: "Skills", value: member.skills?.join(", ") },
             ]}
           />
@@ -98,15 +98,15 @@ export default function TeamMemberPage() {
           <div className="grid gap-3 sm:grid-cols-3">
             <Card>
               <p className="text-xs text-ink-3">Pending tasks</p>
-              <p className="tabular mt-1 text-3xl font-medium">{member.stats.pendingTasks}</p>
+              <p className="tabular mt-1 text-2xl font-normal">{member.stats.pendingTasks}</p>
             </Card>
             <Card>
               <p className="text-xs text-ink-3">Completed tasks</p>
-              <p className="tabular mt-1 text-3xl font-medium">{member.stats.completedTasks}</p>
+              <p className="tabular mt-1 text-2xl font-normal">{member.stats.completedTasks}</p>
             </Card>
             <Card>
               <p className="text-xs text-ink-3">Completion rate</p>
-              <p className="tabular mt-1 text-3xl font-medium">{member.stats.completionRate}%</p>
+              <p className="tabular mt-1 text-2xl font-normal">{member.stats.completionRate}%</p>
             </Card>
           </div>
           <Card title="Assigned projects" padded={false}>
@@ -132,7 +132,7 @@ export default function TeamMemberPage() {
                   <li key={t._id} className="flex items-center justify-between gap-3 px-4 py-2.5">
                     <span className="min-w-0 truncate">{t.title}</span>
                     <span className="flex shrink-0 items-center gap-2 text-xs text-ink-2">
-                      {format.date(t.dueAt)}
+                      <span className="font-mono">{format.date(t.dueAt)}</span>
                       <StatusBadge status={t.priority} />
                     </span>
                   </li>

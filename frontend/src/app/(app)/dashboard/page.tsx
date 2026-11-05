@@ -32,12 +32,12 @@ function Stat({
   href?: string;
 }) {
   const body = (
-    <div className={`h-full bg-surface p-4 ${href ? "transition-colors hover:bg-surface-2" : ""}`}>
+    <div className={`h-full bg-surface p-5 ${href ? "transition-colors hover:bg-surface-2" : ""}`}>
       <p className="text-xs text-ink-2">{title}</p>
-      <p className="tabular mt-1 text-2xl font-medium" data-testid={`stat-${title}`}>
+      <p className="tabular mt-1 text-2xl font-normal" data-testid={`stat-${title}`}>
         {value}
       </p>
-      {note && <p className="mt-0.5 text-xs text-ink-3">{note}</p>}
+      {note && <p className="mt-1 font-mono text-xs text-ink-3">{note}</p>}
     </div>
   );
   return href ? (
@@ -53,7 +53,7 @@ function Stat({
 function StatGroup({ count, children }: { count: number; children: ReactNode }) {
   return (
     <div
-      className="grid min-w-0 grid-cols-[repeat(auto-fit,minmax(136px,1fr))] gap-px overflow-hidden rounded-xl border border-line bg-line shadow-card max-sm:[&>:last-child:nth-child(odd)]:col-span-full"
+      className="grid min-w-0 grid-cols-[repeat(auto-fit,minmax(136px,1fr))] gap-px overflow-hidden rounded-2xl border border-line bg-line shadow-card max-sm:[&>:last-child:nth-child(odd)]:col-span-full"
       style={{ flex: `${count} 1 ${count * 160}px` }}
     >
       {children}
@@ -154,19 +154,19 @@ export default function DashboardPage() {
         <div className="space-y-4">
           {finance && (
             <div className="grid gap-4 lg:grid-cols-3">
-              <section className="rounded-xl border border-line bg-surface p-6 shadow-card">
-                <h2 className="text-[13px] text-ink-2">Collected</h2>
+              <section className="rounded-2xl border border-line bg-surface p-6 shadow-card">
+                <h2 className="text-ink-2">Collected</h2>
                 <p className="tabular mt-2 text-4xl font-normal">
                   {formatMoney(headline?.collected, currency)}
                 </p>
-                <p className="mt-2 text-xs text-ink-3">In this period</p>
+                <p className="mt-2 font-mono text-xs text-ink-3">In this period</p>
               </section>
-              <section className="relative overflow-hidden sm:min-h-44 rounded-xl border border-line bg-surface p-6 shadow-card lg:col-span-2">
-                <h2 className="text-[13px] text-ink-2">Outstanding</h2>
+              <section className="relative overflow-hidden sm:min-h-44 rounded-2xl border border-line bg-surface p-6 shadow-card lg:col-span-2">
+                <h2 className="text-ink-2">Outstanding</h2>
                 <p className="tabular mt-2 text-4xl font-normal">
                   {formatMoney(headline?.outstanding, currency)}
                 </p>
-                <p className="mt-2 text-xs text-ink-3">As of today</p>
+                <p className="mt-2 font-mono text-xs text-ink-3">As of today</p>
                 <InvoiceSheet invoice={finance.openInvoices.find((i) => i.currency === currency)} />
               </section>
             </div>
@@ -266,13 +266,19 @@ export default function DashboardPage() {
                             {row.currency}
                           </td>
                           <td role="cell" className={MONEY_CELL} data-label="Invoiced (period)">
-                            {formatMoney(row.invoiced, row.currency)}
+                            <span className="font-mono">
+                              {formatMoney(row.invoiced, row.currency)}
+                            </span>
                           </td>
                           <td role="cell" className={MONEY_CELL} data-label="Collected (period)">
-                            {formatMoney(row.collected, row.currency)}
+                            <span className="font-mono">
+                              {formatMoney(row.collected, row.currency)}
+                            </span>
                           </td>
                           <td role="cell" className={MONEY_CELL} data-label="Outstanding (today)">
-                            {formatMoney(row.outstanding, row.currency)}
+                            <span className="font-mono">
+                              {formatMoney(row.outstanding, row.currency)}
+                            </span>
                           </td>
                         </tr>
                       ))}
@@ -375,7 +381,7 @@ export default function DashboardPage() {
                           <span
                             className={`shrink-0 text-xs ${overdue ? "font-medium text-bad" : "text-ink-2"}`}
                           >
-                            {format.dateTime(l.nextFollowUpAt)}
+                            <span className="font-mono">{format.dateTime(l.nextFollowUpAt)}</span>
                           </span>
                         </li>
                       );
@@ -402,7 +408,7 @@ export default function DashboardPage() {
                           {t.title}
                         </Link>
                         <span className="flex shrink-0 items-center gap-2 text-xs text-ink-2">
-                          {format.date(t.dueAt)}
+                          <span className="font-mono">{format.date(t.dueAt)}</span>
                           <StatusBadge status={t.priority} />
                         </span>
                       </li>
@@ -481,7 +487,9 @@ export default function DashboardPage() {
                         </Link>
                         <span className="flex items-center gap-2">
                           <span className="tabular text-[13px]">
-                            {formatMoney(i.amountDue, i.currency)}
+                            <span className="font-mono">
+                              {formatMoney(i.amountDue, i.currency)}
+                            </span>
                           </span>
                           <StatusBadge status={i.status} />
                         </span>
@@ -500,7 +508,8 @@ export default function DashboardPage() {
                     <li key={a._id} className="px-4 py-2.5">
                       <p className="line-clamp-2">{a.description}</p>
                       <p className="text-xs text-ink-3">
-                        {a.actor?.name ?? "System"} · {format.dateTime(a.occurredAt)}
+                        {a.actor?.name ?? "System"} ·{" "}
+                        <span className="font-mono">{format.dateTime(a.occurredAt)}</span>
                       </p>
                     </li>
                   ))}

@@ -125,7 +125,7 @@ export default function PipelinePage() {
       ) : error ? (
         <ErrorState error={error} onRetry={refetch} />
       ) : isEmpty ? (
-        <div className="rounded-xl border border-line bg-surface">
+        <div className="rounded-2xl border border-line bg-surface">
           <EmptyState
             icon={KanbanSquare}
             title={
@@ -166,9 +166,11 @@ export default function PipelinePage() {
               <header className="border-b border-line px-3 py-2.5">
                 <div className="flex items-center justify-between">
                   <h2 className="text-[13px] font-medium">{label(column.stage)}</h2>
-                  <span className="tabular text-xs text-ink-3">{column.cards.length}</span>
+                  <span className="tabular font-mono text-xs text-ink-3">
+                    {column.cards.length}
+                  </span>
                 </div>
-                <p className="tabular mt-0.5 min-h-4 text-xs text-ink-2">
+                <p className="tabular mt-0.5 min-h-4 font-mono text-xs text-ink-2">
                   {column.totals.map((t) => formatMoney(t.amount, t.currency)).join(" + ")}
                 </p>
               </header>
@@ -219,7 +221,7 @@ export default function PipelinePage() {
                     </div>
                     {card.value > 0 && (
                       <p className="tabular mt-1.5 font-medium">
-                        {formatMoney(card.value, card.currency)}
+                        <span className="font-mono">{formatMoney(card.value, card.currency)}</span>
                       </p>
                     )}
                     {card.service?.name && (
@@ -237,7 +239,7 @@ export default function PipelinePage() {
                     {card.nextFollowUpAt && (
                       <p className="mt-1.5 flex items-center gap-1 text-xs text-ink-2">
                         <CalendarClock className="size-3" aria-hidden />
-                        {format.date(card.nextFollowUpAt)}
+                        <span className="font-mono">{format.date(card.nextFollowUpAt)}</span>
                       </p>
                     )}
                   </article>

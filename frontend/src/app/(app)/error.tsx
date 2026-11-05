@@ -5,7 +5,7 @@ import { Button, EmptyState } from "@/components/ui";
 
 export default function AppError({ reset }: { error: Error; reset: () => void }) {
   return (
-    <div className="rounded-xl border border-line bg-surface">
+    <div className="rounded-2xl border border-line bg-surface">
       <EmptyState
         icon={CircleAlert}
         title="This page hit a problem"

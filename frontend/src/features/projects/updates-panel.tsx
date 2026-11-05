@@ -82,7 +82,9 @@ export function UpdatesPanel({ project }: { project: string }) {
                 <p className="flex flex-wrap items-center gap-2 text-[13px]">
                   <span className="font-medium">{update.author?.name}</span>
                   <StatusBadge status={update.type} />
-                  <span className="text-xs text-ink-3">{format.dateTime(update.createdAt)}</span>
+                  <span className="text-xs text-ink-3">
+                    <span className="font-mono">{format.dateTime(update.createdAt)}</span>
+                  </span>
                 </p>
                 <p className="mt-1 whitespace-pre-wrap">{update.content}</p>
               </div>

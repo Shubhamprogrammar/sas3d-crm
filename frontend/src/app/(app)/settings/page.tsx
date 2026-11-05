@@ -412,7 +412,7 @@ function SystemTab() {
               </div>
               <div className="flex justify-between gap-3">
                 <dt className="text-ink-2">Last job run</dt>
-                <dd>{format.dateTime(system.jobs.lastRunAt) || "Not yet"}</dd>
+                <dd className="font-mono">{format.dateTime(system.jobs.lastRunAt) || "Not yet"}</dd>
               </div>
             </dl>
           </Card>
@@ -469,7 +469,9 @@ function SystemTab() {
                 key: "when",
                 header: "When",
                 render: (r) => (
-                  <span className="whitespace-nowrap">{format.dateTime(r.createdAt)}</span>
+                  <span className="whitespace-nowrap">
+                    <span className="font-mono">{format.dateTime(r.createdAt)}</span>
+                  </span>
                 ),
               },
               { key: "who", header: "Who", render: (r) => r.actor?.name ?? "System" },

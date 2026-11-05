@@ -89,7 +89,7 @@ export function DataTable<T>({
               {columns.map((column) => (
                 <td
                   key={column.key}
-                  className={`px-4 py-2.5 ${column.align === "right" ? "tabular whitespace-nowrap text-right" : ""} ${column.className ?? ""}`}
+                  className={`px-4 py-2.5 ${column.align === "right" ? "tabular whitespace-nowrap text-right font-mono" : ""} ${column.className ?? ""}`}
                 >
                   {column.render(row)}
                 </td>

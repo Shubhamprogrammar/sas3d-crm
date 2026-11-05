@@ -254,19 +254,27 @@ export function LineItemsEditor({
         >
           <div className="flex justify-between">
             <dt className="text-ink-2">Subtotal</dt>
-            <dd>{formatMoney(totals?.subtotal, currency)}</dd>
+            <dd>
+              <span className="font-mono">{formatMoney(totals?.subtotal, currency)}</span>
+            </dd>
           </div>
           <div className="flex justify-between">
             <dt className="text-ink-2">Discount</dt>
-            <dd>-{formatMoney(totals?.discountAmount, currency)}</dd>
+            <dd>
+              -<span className="font-mono">{formatMoney(totals?.discountAmount, currency)}</span>
+            </dd>
           </div>
           <div className="flex justify-between">
             <dt className="text-ink-2">{watched.taxLabel || "Tax"}</dt>
-            <dd>{formatMoney(totals?.taxAmount, currency)}</dd>
+            <dd>
+              <span className="font-mono">{formatMoney(totals?.taxAmount, currency)}</span>
+            </dd>
           </div>
           <div className="flex justify-between border-t border-line-strong pt-1.5 text-base font-semibold">
             <dt>Total</dt>
-            <dd data-testid="total">{formatMoney(totals?.total, currency)}</dd>
+            <dd data-testid="total">
+              <span className="font-mono">{formatMoney(totals?.total, currency)}</span>
+            </dd>
           </div>
           {preview.error && <p className="text-bad">{preview.error.message}</p>}
         </dl>

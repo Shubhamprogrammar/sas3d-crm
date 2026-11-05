@@ -35,22 +35,57 @@ import { GlobalSearch } from "./global-search";
 import { NotificationBell } from "./notification-bell";
 import { useTheme } from "./providers";
 
-const NAV: { href: string; label: string; icon: LucideIcon; permission: string }[] = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, permission: "dashboard:read" },
-  { href: "/leads", label: "Leads", icon: Users, permission: "lead:read" },
-  { href: "/pipeline", label: "Pipeline", icon: KanbanSquare, permission: "opportunity:read" },
-  { href: "/clients", label: "Clients", icon: Building2, permission: "client:read" },
-  { href: "/tasks", label: "Tasks & Follow-ups", icon: CheckSquare, permission: "task:read" },
-  { href: "/proposals", label: "Proposals", icon: FileText, permission: "proposal:read" },
-  { href: "/projects", label: "Projects", icon: FolderKanban, permission: "project:read" },
-  { href: "/invoices", label: "Invoices & Payments", icon: Receipt, permission: "invoice:read" },
-  { href: "/services", label: "Services", icon: Package, permission: "service:read" },
-  { href: "/team", label: "Team", icon: UsersRound, permission: "team:read" },
-  { href: "/reports", label: "Reports", icon: BarChart3, permission: "report:*" },
-  { href: "/settings", label: "Settings", icon: Settings, permission: "settings:read" },
+interface NavItem {
+  href: string;
+  label: string;
+  icon: LucideIcon;
+  permission: string;
+}
+
+const NAV_GROUPS: { label: string; items: NavItem[] }[] = [
+  {
+    label: "Navigation",
+    items: [
+      {
+        href: "/dashboard",
+        label: "Dashboard",
+        icon: LayoutDashboard,
+        permission: "dashboard:read",
+      },
+      { href: "/leads", label: "Leads", icon: Users, permission: "lead:read" },
+      { href: "/pipeline", label: "Pipeline", icon: KanbanSquare, permission: "opportunity:read" },
+      { href: "/clients", label: "Clients", icon: Building2, permission: "client:read" },
+      { href: "/tasks", label: "Tasks & Follow-ups", icon: CheckSquare, permission: "task:read" },
+    ],
+  },
+  {
+    label: "Delivery",
+    items: [
+      { href: "/proposals", label: "Proposals", icon: FileText, permission: "proposal:read" },
+      { href: "/projects", label: "Projects", icon: FolderKanban, permission: "project:read" },
+      {
+        href: "/invoices",
+        label: "Invoices & Payments",
+        icon: Receipt,
+        permission: "invoice:read",
+      },
+    ],
+  },
+  {
+    label: "Workspace",
+    items: [
+      { href: "/services", label: "Services", icon: Package, permission: "service:read" },
+      { href: "/team", label: "Team", icon: UsersRound, permission: "team:read" },
+      { href: "/reports", label: "Reports", icon: BarChart3, permission: "report:*" },
+      { href: "/settings", label: "Settings", icon: Settings, permission: "settings:read" },
+    ],
+  },
 ];
 
-function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
+const isCurrent = (pathname: string, href: string) =>
+  pathname === href || pathname.startsWith(`${href}/`);
+
+function Sidebar({ onNavigate, search }: { onNavigate?: () => void; search?: boolean }) {
   const pathname = usePathname();
   const { can, me } = useMe();
   const canSee = (permission: string) =>
@@ -59,31 +94,62 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
       : can(permission);
   return (
     <nav aria-label="Main" className="flex h-full flex-col">
-      <div className="flex h-14 items-center gap-2 px-4">
-        <span className="flex size-7 items-center justify-center rounded-lg bg-side-text text-side">
-          <Box className="size-4" aria-hidden />
+      <div className="flex h-16 shrink-0 items-center gap-2 px-6">
+        <Box className="size-5 text-side-text" aria-hidden />
+        <span className="text-[15px] font-medium text-side-text">
+          {me?.companyName ?? "SAS3D"} CRM
         </span>
-        <span className="font-semibold text-side-text">{me?.companyName ?? "SAS3D"} CRM</span>
       </div>
-      <ul className="flex-1 space-y-0.5 overflow-y-auto px-2 py-2">
-        {NAV.filter((item) => canSee(item.permission)).map((item) => {
-          const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
+      {search && (
+        <div className="shrink-0 border-b border-line px-3 pb-4">
+          <GlobalSearch />
+        </div>
+      )}
+      <div className="min-h-0 flex-1 divide-y divide-line overflow-y-auto">
+        {NAV_GROUPS.map((group) => {
+          const items = group.items.filter((item) => canSee(item.permission));
+          if (!items.length) return null;
           return (
-            <li key={item.href}>
-              <Link
-                href={item.href}
-                onClick={onNavigate}
-                aria-current={active ? "page" : undefined}
-                className={`flex h-8 items-center gap-2.5 rounded-lg px-2.5 text-[13px] font-medium transition-colors ${active ? "bg-side-active text-side-text" : "text-side-text-2 hover:bg-side-hover hover:text-side-text"}`}
-              >
-                <item.icon className="size-4 shrink-0" aria-hidden />
-                {item.label}
-              </Link>
-            </li>
+            <div key={group.label} className="px-3 py-4">
+              <p className="mb-2 px-3 font-mono text-xs text-ink-3">{group.label}</p>
+              <ul className="space-y-0.5">
+                {items.map((item) => {
+                  const active = isCurrent(pathname, item.href);
+                  return (
+                    <li key={item.href}>
+                      <Link
+                        href={item.href}
+                        onClick={onNavigate}
+                        aria-current={active ? "page" : undefined}
+                        className={`flex h-9 items-center gap-2.5 rounded-lg px-3 transition-colors ${active ? "bg-linear-to-b from-side-active to-side-active-end text-side-text shadow-[inset_0_1px_0_var(--side-highlight)] ring-1 ring-line" : "text-side-text-2 hover:bg-side-hover hover:text-side-text"}`}
+                      >
+                        <item.icon className="size-4 shrink-0" aria-hidden />
+                        {item.label}
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
           );
         })}
-      </ul>
+      </div>
     </nav>
+  );
+}
+
+/** The current section's name, in the top bar on desktop. */
+function SectionName() {
+  const pathname = usePathname();
+  const item = NAV_GROUPS.flatMap((group) => group.items).find((candidate) =>
+    isCurrent(pathname, candidate.href),
+  );
+  if (!item) return null;
+  return (
+    <span className="hidden items-center gap-2.5 text-ink-2 lg:flex">
+      <item.icon className="size-4" aria-hidden />
+      {item.label}
+    </span>
   );
 }
 
@@ -161,8 +227,8 @@ export function AppShell({ children }: { children: ReactNode }) {
   return (
     <MeProvider>
       <div className="flex h-dvh">
-        <aside className="hidden w-60 shrink-0 border-r border-line bg-side lg:block">
-          <Sidebar />
+        <aside className="hidden w-64 shrink-0 border-r border-line bg-side lg:block">
+          <Sidebar search />
         </aside>
         {mobileOpen && (
           <div
@@ -173,7 +239,7 @@ export function AppShell({ children }: { children: ReactNode }) {
               <Button
                 variant="ghost"
                 size="icon"
-                className="absolute right-2 top-3 text-side-text! hover:bg-side-hover!"
+                className="absolute right-2 top-4 text-side-text! hover:bg-side-hover!"
                 aria-label="Close menu"
                 onClick={() => setMobileOpen(false)}
                 icon={<X className="size-4" />}
@@ -183,7 +249,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           </div>
         )}
         <div className="flex min-w-0 flex-1 flex-col">
-          <header className="flex h-14 shrink-0 items-center gap-2 border-b border-line bg-surface px-3 sm:px-4">
+          <header className="flex h-16 shrink-0 items-center gap-2 border-b border-line px-3 sm:px-6">
             <Button
               variant="ghost"
               size="icon"
@@ -192,7 +258,10 @@ export function AppShell({ children }: { children: ReactNode }) {
               onClick={() => setMobileOpen(true)}
               icon={<Menu className="size-4" />}
             />
-            <GlobalSearch />
+            <div className="min-w-0 flex-1 lg:hidden">
+              <GlobalSearch />
+            </div>
+            <SectionName />
             <div className="ml-auto flex items-center gap-1 sm:gap-1.5">
               <QuickCreate />
               <NotificationBell />

@@ -205,14 +205,23 @@ export default function LeadsPage() {
       header: "Budget",
       sortKey: "estimatedBudget",
       align: "right",
-      render: (l) => (l.estimatedBudget ? formatMoney(l.estimatedBudget, l.budgetCurrency) : ""),
+      render: (l) =>
+        l.estimatedBudget ? (
+          <span className="font-mono">{formatMoney(l.estimatedBudget, l.budgetCurrency)}</span>
+        ) : (
+          ""
+        ),
     },
     { key: "assigned", header: "Assigned", render: (l) => <UserChip user={l.assignedTo} /> },
     {
       key: "followUp",
       header: "Next follow-up",
       sortKey: "nextFollowUpAt",
-      render: (l) => <span className="whitespace-nowrap">{format.date(l.nextFollowUpAt)}</span>,
+      render: (l) => (
+        <span className="whitespace-nowrap">
+          <span className="font-mono">{format.date(l.nextFollowUpAt)}</span>
+        </span>
+      ),
     },
     {
       key: "actions",

@@ -54,7 +54,11 @@ export default function TeamPage() {
     {
       key: "joined",
       header: "Joined",
-      render: (m) => <span className="whitespace-nowrap">{format.day(m.joiningDate)}</span>,
+      render: (m) => (
+        <span className="whitespace-nowrap">
+          <span className="font-mono">{format.day(m.joiningDate)}</span>
+        </span>
+      ),
     },
     { key: "status", header: "Status", render: (m) => <StatusBadge status={m.status} /> },
   ];

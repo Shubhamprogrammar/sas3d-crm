@@ -58,20 +58,32 @@ function InvoicesTab() {
       key: "issue",
       header: "Issued",
       sortKey: "issueDate",
-      render: (i) => <span className="whitespace-nowrap">{format.day(i.issueDate)}</span>,
+      render: (i) => (
+        <span className="whitespace-nowrap">
+          <span className="font-mono">{format.day(i.issueDate)}</span>
+        </span>
+      ),
     },
     {
       key: "due",
       header: "Due",
       sortKey: "dueDate",
-      render: (i) => <span className="whitespace-nowrap">{format.day(i.dueDate)}</span>,
+      render: (i) => (
+        <span className="whitespace-nowrap">
+          <span className="font-mono">{format.day(i.dueDate)}</span>
+        </span>
+      ),
     },
     {
       key: "total",
       header: "Total",
       sortKey: "total",
       align: "right",
-      render: (i) => <span className="whitespace-nowrap">{formatMoney(i.total, i.currency)}</span>,
+      render: (i) => (
+        <span className="whitespace-nowrap">
+          <span className="font-mono">{formatMoney(i.total, i.currency)}</span>
+        </span>
+      ),
     },
     {
       key: "balance",
@@ -79,7 +91,7 @@ function InvoicesTab() {
       align: "right",
       render: (i) => (
         <span className="whitespace-nowrap font-medium">
-          {formatMoney(i.amountDue, i.currency)}
+          <span className="font-mono">{formatMoney(i.amountDue, i.currency)}</span>
         </span>
       ),
     },
@@ -145,7 +157,11 @@ function PaymentsTab() {
     {
       key: "date",
       header: "Date",
-      render: (p) => <span className="whitespace-nowrap">{format.day(p.paymentDate)}</span>,
+      render: (p) => (
+        <span className="whitespace-nowrap">
+          <span className="font-mono">{format.day(p.paymentDate)}</span>
+        </span>
+      ),
     },
     {
       key: "invoice",
@@ -174,7 +190,7 @@ function PaymentsTab() {
       align: "right",
       render: (p) => (
         <span className={`whitespace-nowrap ${p.voidedAt ? "text-ink-3 line-through" : ""}`}>
-          {formatMoney(p.amount, p.currency)}
+          <span className="font-mono">{formatMoney(p.amount, p.currency)}</span>
         </span>
       ),
     },

@@ -11,7 +11,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { StatusBadge } from "@/components/ui";
 import { useApiQuery } from "@/hooks/use-api";
 import { useDebounce } from "@/hooks/use-debounce";
@@ -26,7 +26,15 @@ const ICONS: Record<string, LucideIcon> = {
   task: CheckSquare,
 };
 
+const subscribeNever = () => () => undefined;
+const KEYCAP = "rounded border border-line bg-surface-2 px-1.5 font-mono text-[11px] text-ink-3";
+
 export function GlobalSearch() {
+  const onMac = useSyncExternalStore(
+    subscribeNever,
+    () => /mac/i.test(navigator.platform),
+    () => false,
+  );
   const router = useRouter();
   const root = useRef<HTMLDivElement>(null);
   const input = useRef<HTMLInputElement>(null);
@@ -42,6 +50,8 @@ export function GlobalSearch() {
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+        // The shell mounts one search per layout, and only the visible one has an offset parent.
+        if (!input.current?.offsetParent) return;
         event.preventDefault();
         input.current?.focus();
       }
@@ -63,9 +73,9 @@ export function GlobalSearch() {
   };
 
   return (
-    <div ref={root} className="relative w-full max-w-md">
+    <div ref={root} className="relative w-full">
       <Search
-        className="pointer-events-none absolute left-2.5 top-2 size-4 text-ink-3"
+        className="pointer-events-none absolute left-3 top-2.5 size-4 text-ink-3"
         aria-hidden
       />
       <input
@@ -94,13 +104,22 @@ export function GlobalSearch() {
           if (event.key === "Escape") setOpen(false);
           if (event.key === "Enter" && results[cursor]) go(results[cursor]);
         }}
-        className="h-8 w-full rounded-lg border border-line bg-surface-2 pl-8 pr-3 text-[13px] placeholder:text-ink-3 focus:border-accent focus:bg-surface focus:outline-none"
+        className="h-9 w-full rounded-lg border border-line bg-surface pl-9 pr-3 lg:pr-16 placeholder:text-ink-3 focus:border-accent focus:outline-none"
       />
+      {!value && (
+        <span
+          className="pointer-events-none absolute right-2 top-2 hidden items-center gap-1 lg:flex"
+          aria-hidden
+        >
+          <kbd className={KEYCAP}>{onMac ? "⌘" : "Ctrl"}</kbd>
+          <kbd className={KEYCAP}>K</kbd>
+        </span>
+      )}
       {open && term.length >= 2 && (
         <ul
           id="global-search-results"
           role="listbox"
-          className="absolute z-40 mt-1 max-h-96 w-full min-w-72 overflow-y-auto rounded-xl border border-line bg-surface p-1 shadow-pop"
+          className="absolute z-40 mt-1 max-h-96 w-96 max-w-[calc(100vw-2rem)] overflow-y-auto rounded-xl border border-line bg-surface p-1 shadow-pop"
         >
           {!results.length && (
             <li className="px-3 py-4 text-center text-[13px] text-ink-2">

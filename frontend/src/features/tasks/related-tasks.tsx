@@ -71,7 +71,9 @@ export function RelatedTasks({
               </span>
               <UserChip user={task.assignedTo} />
               <span className="tabular text-xs text-ink-2">
-                {task.hasDueTime ? format.dateTime(task.dueAt) : format.date(task.dueAt)}
+                <span className="font-mono">
+                  {task.hasDueTime ? format.dateTime(task.dueAt) : format.date(task.dueAt)}
+                </span>
               </span>
               <StatusBadge status={task.priority} />
             </li>

@@ -5,6 +5,10 @@ import { useEffect, useId, useRef, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { Button } from "./button";
 
+/** Escape belongs to an open select list first, so it must not also close the form around it. */
+const selectListOpen = () =>
+  CSS.supports("selector(:open)") && Boolean(document.querySelector("select:open"));
+
 function useDialogBehavior(open: boolean, onClose: () => void) {
   const panel = useRef<HTMLDivElement>(null);
   const close = useRef(onClose);
@@ -26,7 +30,7 @@ function useDialogBehavior(open: boolean, onClose: () => void) {
     )?.focus();
 
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") close.current();
+      if (event.key === "Escape" && !selectListOpen()) close.current();
       if (event.key !== "Tab") return;
       const items = focusable();
       const first = items[0];

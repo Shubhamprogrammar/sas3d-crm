@@ -113,7 +113,11 @@ export default function ClientDetailPage() {
         </div>
       ),
     },
-    { key: "due", header: "Expected delivery", render: (p) => format.day(p.expectedDeliveryDate) },
+    {
+      key: "due",
+      header: "Expected delivery",
+      render: (p) => <span className="font-mono">{format.day(p.expectedDeliveryDate)}</span>,
+    },
   ];
   const proposalColumns: Column<Proposal>[] = [
     {
@@ -127,7 +131,11 @@ export default function ClientDetailPage() {
       key: "total",
       header: "Total",
       align: "right",
-      render: (p) => formatMoney(p.total, p.currency),
+      render: (p) => (
+        <span className="font-mono">
+          <span className="font-mono">{formatMoney(p.total, p.currency)}</span>
+        </span>
+      ),
     },
   ];
   const invoiceColumns: Column<Invoice>[] = [
@@ -137,22 +145,38 @@ export default function ClientDetailPage() {
       render: (i) => <span className="font-mono text-xs font-medium">{i.number}</span>,
     },
     { key: "status", header: "Status", render: (i) => <StatusBadge status={i.status} /> },
-    { key: "due", header: "Due", render: (i) => format.day(i.dueDate) },
+    {
+      key: "due",
+      header: "Due",
+      render: (i) => <span className="font-mono">{format.day(i.dueDate)}</span>,
+    },
     {
       key: "total",
       header: "Total",
       align: "right",
-      render: (i) => formatMoney(i.total, i.currency),
+      render: (i) => (
+        <span className="font-mono">
+          <span className="font-mono">{formatMoney(i.total, i.currency)}</span>
+        </span>
+      ),
     },
     {
       key: "balance",
       header: "Balance",
       align: "right",
-      render: (i) => formatMoney(i.amountDue, i.currency),
+      render: (i) => (
+        <span className="font-mono">
+          <span className="font-mono">{formatMoney(i.amountDue, i.currency)}</span>
+        </span>
+      ),
     },
   ];
   const paymentColumns: Column<Payment>[] = [
-    { key: "date", header: "Date", render: (p) => format.day(p.paymentDate) },
+    {
+      key: "date",
+      header: "Date",
+      render: (p) => <span className="font-mono">{format.day(p.paymentDate)}</span>,
+    },
     {
       key: "invoice",
       header: "Invoice",
@@ -172,7 +196,11 @@ export default function ClientDetailPage() {
       key: "amount",
       header: "Amount",
       align: "right",
-      render: (p) => formatMoney(p.amount, p.currency),
+      render: (p) => (
+        <span className="font-mono">
+          <span className="font-mono">{formatMoney(p.amount, p.currency)}</span>
+        </span>
+      ),
     },
   ];
 
@@ -231,20 +259,20 @@ export default function ClientDetailPage() {
       <div className="mb-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <Card>
           <p className="text-xs text-ink-3">Total projects</p>
-          <p className="tabular mt-1 text-3xl font-medium">{client.summary?.totalProjects ?? 0}</p>
+          <p className="tabular mt-1 text-2xl font-normal">{client.summary?.totalProjects ?? 0}</p>
           <p className="text-xs text-ink-2">{client.summary?.activeProjects ?? 0} active</p>
         </Card>
         <Card>
           <p className="text-xs text-ink-3">Last interaction</p>
           <p className="mt-1 text-base font-medium">
-            {format.date(client.lastInteractionAt) || "None"}
+            <span className="font-mono">{format.date(client.lastInteractionAt) || "None"}</span>
           </p>
         </Card>
         {canFinance && (
           <Card className="sm:col-span-2">
             <p className="text-xs text-ink-3">Billed, received and outstanding</p>
             {client.summary?.financials.length ? (
-              <table className="tabular mt-1 w-full text-[13px]">
+              <table className="tabular mt-1 w-full font-mono text-[13px]">
                 <thead className="text-xs text-ink-3">
                   <tr>
                     <th className="py-0.5 text-left font-medium">Currency</th>
@@ -334,7 +362,7 @@ export default function ClientDetailPage() {
                   ),
                   hidden: !client.sourceLead || !can("lead:read"),
                 },
-                { label: "Client since", value: format.date(client.createdAt) },
+                { label: "Client since", value: format.date(client.createdAt), mono: true },
               ]}
             />
             {client.notes && (

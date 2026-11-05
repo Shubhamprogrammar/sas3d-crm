@@ -197,7 +197,9 @@ export default function ServicesPage() {
       align: "right",
       render: (s) =>
         s.startingPrice ? (
-          <span className="whitespace-nowrap">{formatMoney(s.startingPrice, s.currency)}</span>
+          <span className="whitespace-nowrap">
+            <span className="font-mono">{formatMoney(s.startingPrice, s.currency)}</span>
+          </span>
         ) : (
           <span className="text-ink-3">Not set</span>
         ),

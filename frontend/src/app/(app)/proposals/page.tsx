@@ -57,14 +57,22 @@ export default function ProposalsPage() {
       key: "valid",
       header: "Valid until",
       sortKey: "validUntil",
-      render: (p) => <span className="whitespace-nowrap">{format.day(p.validUntil)}</span>,
+      render: (p) => (
+        <span className="whitespace-nowrap">
+          <span className="font-mono">{format.day(p.validUntil)}</span>
+        </span>
+      ),
     },
     {
       key: "total",
       header: "Total",
       sortKey: "total",
       align: "right",
-      render: (p) => formatMoney(p.total, p.currency),
+      render: (p) => (
+        <span className="font-mono">
+          <span className="font-mono">{formatMoney(p.total, p.currency)}</span>
+        </span>
+      ),
     },
   ];
 

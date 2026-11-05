@@ -113,7 +113,9 @@ export default function TasksPage() {
           ["TODO", "IN_PROGRESS"].includes(t.status);
         return (
           <span className={`whitespace-nowrap ${overdue ? "font-medium text-bad" : ""}`}>
-            {t.hasDueTime ? format.dateTime(t.dueAt) : format.date(t.dueAt)}
+            <span className="font-mono">
+              {t.hasDueTime ? format.dateTime(t.dueAt) : format.date(t.dueAt)}
+            </span>
             {overdue ? " (overdue)" : ""}
           </span>
         );
