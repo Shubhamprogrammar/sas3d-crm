@@ -16,6 +16,7 @@ import {
 import {
   ChartCard,
   minorToMajorForChart,
+  periodLabel,
   RankedBars,
   TimeArea,
   TimeColumns,
@@ -33,7 +34,7 @@ function Tile({ title, value }: { title: string; value: string | number }) {
   return (
     <Card>
       <p className="text-xs text-ink-2">{title}</p>
-      <p className="tabular mt-1 text-2xl font-semibold">{value}</p>
+      <p className="tabular mt-1 text-3xl font-medium">{value}</p>
     </Card>
   );
 }
@@ -56,7 +57,7 @@ function SalesReport({ params }: { params: object }) {
   const { data, isLoading, error, refetch } = useApiQuery<SalesData>("/reports/sales", params);
   if (isLoading) return <LoadingSkeleton />;
   if (error || !data) return <ErrorState error={error} onRetry={refetch} />;
-  const monthly = data.monthly.map((r) => ({ label: r.period, value: r.count }));
+  const monthly = data.monthly.map((r) => ({ label: periodLabel(r.period), value: r.count }));
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
@@ -67,7 +68,13 @@ function SalesReport({ params }: { params: object }) {
         <Tile title="Win rate" value={`${data.winRate}%`} />
       </div>
       <div className="grid gap-4 lg:grid-cols-2">
-        <ChartCard title="Leads over time" valueHeader="Leads" rows={monthly}>
+        <ChartCard
+          className="lg:col-span-2"
+          height={320}
+          title="Leads over time"
+          valueHeader="Leads"
+          rows={monthly}
+        >
           <TimeColumns rows={monthly} />
         </ChartCard>
         <ChartCard title="Leads by source" valueHeader="Leads" rows={rowsOf(data.bySource)}>
@@ -139,7 +146,7 @@ function FinanceReport({ params }: { params: object }) {
     `${currency} ${major.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   const monthly = data.monthly
     .filter((r) => r.currency === currency)
-    .map((r) => ({ label: r.period, value: minorToMajorForChart(r.amount) }));
+    .map((r) => ({ label: periodLabel(r.period), value: minorToMajorForChart(r.amount) }));
   const byService = data.byService
     .filter((r) => r.currency === currency)
     .map((r) => ({ label: r.service, value: minorToMajorForChart(r.amount) }));
@@ -180,6 +187,8 @@ function FinanceReport({ params }: { params: object }) {
       </Card>
       <div className="grid gap-4 lg:grid-cols-2">
         <ChartCard
+          className="lg:col-span-2"
+          height={320}
           title="Revenue collected over time"
           valueHeader="Collected"
           rows={monthly}
@@ -232,7 +241,7 @@ function FinanceReport({ params }: { params: object }) {
                 header: "Invoice",
                 render: (r) => (
                   <div>
-                    <p className="font-medium">{r.number}</p>
+                    <p className="font-mono text-xs font-medium">{r.number}</p>
                     <p className="text-xs text-ink-3">{r.client?.name}</p>
                   </div>
                 ),
@@ -272,7 +281,7 @@ function FinanceReport({ params }: { params: object }) {
                 header: "Invoice",
                 render: (r) => (
                   <div>
-                    <p className="font-medium">{r.invoice?.number}</p>
+                    <p className="font-mono text-xs font-medium">{r.invoice?.number}</p>
                     <p className="text-xs text-ink-3">{r.client?.name}</p>
                   </div>
                 ),

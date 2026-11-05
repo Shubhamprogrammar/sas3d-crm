@@ -8,6 +8,7 @@ import {
   Bar,
   BarChart,
   CartesianGrid,
+  Cell,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -15,7 +16,7 @@ import {
 } from "recharts";
 import { Button, EmptyState } from "@/components/ui";
 
-const AXIS = { fontSize: 11, fill: "var(--text-3)" };
+const AXIS = { fontSize: 11, fontFamily: "var(--font-mono)", fill: "var(--text-3)" };
 const CURSOR = { fill: "var(--surface-2)" };
 
 function ChartTooltip({
@@ -34,7 +35,7 @@ function ChartTooltip({
   return (
     <div className="rounded-lg border border-line bg-surface px-2.5 py-1.5 text-xs shadow-pop">
       <p className="text-ink-2">{heading}</p>
-      <p className="tabular font-semibold text-ink">{format(Number(value))}</p>
+      <p className="tabular font-medium text-ink">{format(Number(value))}</p>
     </div>
   );
 }
@@ -53,6 +54,7 @@ export function ChartCard({
   children,
   action,
   height = 240,
+  className = "",
 }: {
   title: string;
   rows: ChartRow[];
@@ -61,12 +63,15 @@ export function ChartCard({
   children: ReactNode;
   action?: ReactNode;
   height?: number;
+  className?: string;
 }) {
   const [asTable, setAsTable] = useState(false);
   return (
-    <section className="min-w-0 rounded-xl border border-line bg-surface shadow-card">
+    <section
+      className={`min-w-0 rounded-xl border border-line bg-surface shadow-card ${className}`}
+    >
       <header className="flex items-center justify-between gap-2 px-4 pb-1 pt-3">
-        <h2 className="font-semibold">{title}</h2>
+        <h2 className="font-medium">{title}</h2>
         <div className="flex items-center gap-1.5">
           {action}
           <Button
@@ -160,7 +165,7 @@ export function RankedBars({
         />
         <Bar
           dataKey="value"
-          fill="var(--series-1)"
+          fill="var(--bar)"
           radius={[0, 4, 4, 0]}
           maxBarSize={16}
           isAnimationActive={false}
@@ -210,13 +215,14 @@ export function TimeColumns({
             />
           )}
         />
-        <Bar
-          dataKey="value"
-          fill="var(--series-1)"
-          radius={[4, 4, 0, 0]}
-          maxBarSize={24}
-          isAnimationActive={false}
-        />
+        <Bar dataKey="value" radius={[4, 4, 0, 0]} maxBarSize={24} isAnimationActive={false}>
+          {rows.map((row, index) => (
+            <Cell
+              key={row.label}
+              fill={index === rows.length - 1 ? "var(--accent)" : "var(--bar)"}
+            />
+          ))}
+        </Bar>
       </BarChart>
     </ResponsiveContainer>
   );
@@ -231,7 +237,7 @@ export function TimeArea({
 }) {
   return (
     <ResponsiveContainer width="100%" height="100%">
-      <AreaChart data={rows} margin={{ top: 8, right: 8, bottom: 0, left: -12 }}>
+      <AreaChart data={rows} margin={{ top: 8, right: 28, bottom: 0, left: -12 }}>
         <CartesianGrid vertical={false} stroke="var(--border)" />
         <XAxis
           dataKey="label"
@@ -260,17 +266,27 @@ export function TimeArea({
         <Area
           type="monotone"
           dataKey="value"
-          stroke="var(--series-1)"
-          strokeWidth={2}
-          fill="var(--series-1)"
-          fillOpacity={0.1}
-          dot={rows.length === 1 ? { r: 4, fill: "var(--series-1)" } : false}
+          stroke="var(--accent)"
+          strokeWidth={2.5}
+          fill="var(--accent)"
+          fillOpacity={0.14}
+          dot={rows.length === 1 ? { r: 4, fill: "var(--accent)" } : false}
           activeDot={{ r: 4, stroke: "var(--surface)", strokeWidth: 2 }}
           isAnimationActive={false}
         />
       </AreaChart>
     </ResponsiveContainer>
   );
+}
+
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+/** Reads the API's "YYYY-MM" and "YYYY-MM-DD" buckets as text, so no timezone can shift them. */
+export function periodLabel(period: string) {
+  const [year, month, day] = period.split("-");
+  const name = MONTHS[Number(month) - 1];
+  if (!name) return period;
+  return day ? `${day} ${name}` : `${name} ${year}`;
 }
 
 /** Chart geometry needs plain numbers; exact money stays in integer minor units everywhere else. */

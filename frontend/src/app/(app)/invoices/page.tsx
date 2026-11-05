@@ -39,7 +39,9 @@ function InvoicesTab() {
       key: "number",
       header: "Number",
       sortKey: "number",
-      render: (i) => <span className="whitespace-nowrap font-medium">{i.number}</span>,
+      render: (i) => (
+        <span className="whitespace-nowrap font-mono text-xs font-medium">{i.number}</span>
+      ),
     },
     {
       key: "client",
@@ -47,7 +49,7 @@ function InvoicesTab() {
       render: (i) => (
         <div className="min-w-36">
           {i.client?.name}
-          <p className="text-xs text-ink-3">{i.project?.code}</p>
+          <p className="font-mono text-xs text-ink-3">{i.project?.code}</p>
         </div>
       ),
     },
@@ -149,7 +151,9 @@ function PaymentsTab() {
       key: "invoice",
       header: "Invoice",
       render: (p) =>
-        typeof p.invoice === "object" && <span className="font-medium">{p.invoice.number}</span>,
+        typeof p.invoice === "object" && (
+          <span className="font-mono text-xs font-medium">{p.invoice.number}</span>
+        ),
     },
     {
       key: "client",
@@ -212,7 +216,7 @@ function PaymentsTab() {
           <EmptyState
             icon={Wallet}
             title="No payments recorded"
-            description="Open an issued invoice to record a payment."
+            description="Open an issued invoice to record a payment"
           />
         }
       />

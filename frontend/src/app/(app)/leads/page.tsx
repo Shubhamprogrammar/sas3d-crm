@@ -242,7 +242,7 @@ export default function LeadsPage() {
     <>
       <PageHeader
         title="Leads"
-        description="Every potential client, from first contact to conversion."
+        description="Every potential client, from first contact to conversion"
         actions={
           <>
             {can("lead:import") && (
@@ -361,7 +361,7 @@ export default function LeadsPage() {
               <EmptyState
                 icon={Users}
                 title="No leads yet"
-                description="Add your first lead or import a CSV to fill the pipeline."
+                description="Add your first lead or import a CSV to fill the pipeline"
                 action={
                   can("lead:write") ? (
                     <Button variant="primary" onClick={() => setFormOpen(true)}>

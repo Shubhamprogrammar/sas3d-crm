@@ -81,7 +81,7 @@ export default function TeamMemberPage() {
           <div className="mb-4 flex items-center gap-3">
             <Avatar name={member.name} image={member.image} size="lg" />
             <div className="min-w-0">
-              <p className="font-semibold">{member.name}</p>
+              <p className="font-medium">{member.name}</p>
               <p className="truncate text-[13px] text-ink-2">{member.email}</p>
             </div>
           </div>
@@ -98,15 +98,15 @@ export default function TeamMemberPage() {
           <div className="grid gap-3 sm:grid-cols-3">
             <Card>
               <p className="text-xs text-ink-3">Pending tasks</p>
-              <p className="tabular mt-1 text-2xl font-semibold">{member.stats.pendingTasks}</p>
+              <p className="tabular mt-1 text-3xl font-medium">{member.stats.pendingTasks}</p>
             </Card>
             <Card>
               <p className="text-xs text-ink-3">Completed tasks</p>
-              <p className="tabular mt-1 text-2xl font-semibold">{member.stats.completedTasks}</p>
+              <p className="tabular mt-1 text-3xl font-medium">{member.stats.completedTasks}</p>
             </Card>
             <Card>
               <p className="text-xs text-ink-3">Completion rate</p>
-              <p className="tabular mt-1 text-2xl font-semibold">{member.stats.completionRate}%</p>
+              <p className="tabular mt-1 text-3xl font-medium">{member.stats.completionRate}%</p>
             </Card>
           </div>
           <Card title="Assigned projects" padded={false}>
@@ -115,7 +115,7 @@ export default function TeamMemberPage() {
                 {member.projects.map((p) => (
                   <li key={p._id} className="flex items-center justify-between gap-3 px-4 py-2.5">
                     <Link className="hover:underline" href={`/projects/${p._id}`}>
-                      {p.name} <span className="text-xs text-ink-3">{p.code}</span>
+                      {p.name} <span className="font-mono text-xs text-ink-3">{p.code}</span>
                     </Link>
                     <StatusBadge status={p.status} />
                   </li>

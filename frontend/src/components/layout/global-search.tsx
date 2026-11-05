@@ -74,7 +74,7 @@ export function GlobalSearch() {
         aria-expanded={open && term.length >= 2}
         aria-controls="global-search-results"
         aria-label="Search leads, clients, projects, proposals, invoices and tasks"
-        placeholder="Search everything"
+        placeholder="Search"
         value={value}
         onFocus={() => setOpen(true)}
         onChange={(event) => {

@@ -167,7 +167,7 @@ export function ClientForm({
           )}
         </div>
         <fieldset className="space-y-3">
-          <legend className="font-semibold">Billing address</legend>
+          <legend className="font-medium">Billing address</legend>
           <FormField label="Address line 1">
             {(f) => <Input {...f} {...register("billingAddress.line1")} />}
           </FormField>
@@ -190,7 +190,7 @@ export function ClientForm({
           </div>
         </fieldset>
         <fieldset className="grid gap-3 sm:grid-cols-2">
-          <legend className="mb-2 font-semibold">Tax identification</legend>
+          <legend className="mb-2 font-medium">Tax identification</legend>
           <FormField label="Type" hint="GSTIN, VAT, EIN, TRN...">
             {(f) => <Input {...f} {...register("tax.idType")} />}
           </FormField>

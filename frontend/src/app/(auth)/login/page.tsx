@@ -42,8 +42,8 @@ function LoginForm() {
   return (
     <form onSubmit={submit} noValidate className="space-y-4">
       <div>
-        <h1 className="text-lg font-semibold">Sign in</h1>
-        <p className="text-[13px] text-ink-2">Use the account your administrator created.</p>
+        <h1 className="text-xl font-medium">Sign in</h1>
+        <p className="text-[13px] text-ink-2">Use the account your administrator created</p>
       </div>
       {error && (
         <p role="alert" className="rounded-lg bg-bad-soft px-3 py-2 text-[13px] text-bad">

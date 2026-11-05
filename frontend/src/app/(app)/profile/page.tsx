@@ -143,7 +143,7 @@ export default function ProfilePage() {
           <div className="mb-4 flex items-center gap-3">
             <Avatar name={me.user.name} image={me.user.image} size="lg" />
             <div className="min-w-0">
-              <p className="truncate font-semibold">{me.user.email}</p>
+              <p className="truncate font-medium">{me.user.email}</p>
               <p className="flex items-center gap-2 text-[13px] text-ink-2">
                 {label(me.user.role)}
                 <StatusBadge status={me.user.status} />

@@ -60,10 +60,10 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   return (
     <nav aria-label="Main" className="flex h-full flex-col">
       <div className="flex h-14 items-center gap-2 px-4">
-        <span className="flex size-7 items-center justify-center rounded-lg bg-accent text-on-accent">
+        <span className="flex size-7 items-center justify-center rounded-lg bg-side-text text-side">
           <Box className="size-4" aria-hidden />
         </span>
-        <span className="font-semibold tracking-tight">{me?.companyName ?? "SAS3D"} CRM</span>
+        <span className="font-semibold text-side-text">{me?.companyName ?? "SAS3D"} CRM</span>
       </div>
       <ul className="flex-1 space-y-0.5 overflow-y-auto px-2 py-2">
         {NAV.filter((item) => canSee(item.permission)).map((item) => {
@@ -74,7 +74,7 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
                 href={item.href}
                 onClick={onNavigate}
                 aria-current={active ? "page" : undefined}
-                className={`flex items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-[13px] font-medium transition-colors ${active ? "bg-accent-soft text-accent" : "text-ink-2 hover:bg-surface-2 hover:text-ink"}`}
+                className={`flex h-8 items-center gap-2.5 rounded-lg px-2.5 text-[13px] font-medium transition-colors ${active ? "bg-side-active text-side-text" : "text-side-text-2 hover:bg-side-hover hover:text-side-text"}`}
               >
                 <item.icon className="size-4 shrink-0" aria-hidden />
                 {item.label}
@@ -112,7 +112,7 @@ function QuickCreate() {
       items={items}
       ariaLabel="Quick create"
       trigger={
-        <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-accent text-on-accent hover:bg-accent-hover sm:w-auto sm:gap-1.5 sm:px-2.5 sm:text-[13px] sm:font-medium">
+        <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-on-primary hover:bg-primary-hover sm:w-auto sm:gap-1.5 sm:px-2.5 sm:text-[13px] sm:font-medium">
           <Plus className="size-4" aria-hidden />
           <span className="hidden sm:inline">Create</span>
         </span>
@@ -161,7 +161,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   return (
     <MeProvider>
       <div className="flex h-dvh">
-        <aside className="hidden w-56 shrink-0 border-r border-line bg-surface lg:block">
+        <aside className="hidden w-60 shrink-0 border-r border-line bg-side lg:block">
           <Sidebar />
         </aside>
         {mobileOpen && (
@@ -169,11 +169,11 @@ export function AppShell({ children }: { children: ReactNode }) {
             className="fixed inset-0 z-40 bg-black/40 lg:hidden"
             onMouseDown={(e) => e.target === e.currentTarget && setMobileOpen(false)}
           >
-            <aside className="relative h-full w-64 bg-surface shadow-pop">
+            <aside className="relative h-full w-64 bg-side shadow-pop">
               <Button
                 variant="ghost"
                 size="icon"
-                className="absolute right-2 top-3"
+                className="absolute right-2 top-3 text-side-text! hover:bg-side-hover!"
                 aria-label="Close menu"
                 onClick={() => setMobileOpen(false)}
                 icon={<X className="size-4" />}
@@ -201,7 +201,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             </div>
           </header>
           <main className="min-h-0 flex-1 overflow-y-auto">
-            <div className="mx-auto max-w-[1400px] px-4 py-5 sm:px-6">
+            <div className="mx-auto max-w-[1400px] px-4 py-6 sm:px-6">
               <Suspense>{children}</Suspense>
             </div>
           </main>

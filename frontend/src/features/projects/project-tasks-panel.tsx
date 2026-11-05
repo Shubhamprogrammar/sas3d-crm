@@ -235,7 +235,7 @@ export function ProjectTasksPanel({
         <EmptyState
           icon={ListTodo}
           title="No tasks yet"
-          description="Tasks and subtasks count toward project progress."
+          description="Tasks and subtasks count toward project progress"
         />
       ) : (
         <ul className="divide-y divide-line">

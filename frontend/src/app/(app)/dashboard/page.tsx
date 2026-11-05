@@ -6,11 +6,13 @@ import { Card, ErrorState, PageHeader, ProgressBar, Skeleton, StatusBadge } from
 import {
   ChartCard,
   minorToMajorForChart,
+  periodLabel,
   RankedBars,
   TimeArea,
   TimeColumns,
 } from "@/components/charts/charts";
 import { CurrencySelect } from "@/features/dashboard/currency-select";
+import { InvoiceSheet } from "@/features/dashboard/invoice-sheet";
 import { RangeFilter, rangeParams, type RangeValue } from "@/features/dashboard/range-filter";
 import { useApiQuery } from "@/hooks/use-api";
 import { useFormat, useMe } from "@/hooks/use-me";
@@ -30,12 +32,9 @@ function Stat({
   href?: string;
 }) {
   const body = (
-    <div className="h-full rounded-xl border border-line bg-surface p-3.5 shadow-card transition-colors hover:border-line-strong">
+    <div className={`h-full bg-surface p-4 ${href ? "transition-colors hover:bg-surface-2" : ""}`}>
       <p className="text-xs text-ink-2">{title}</p>
-      <p
-        className="tabular mt-1 text-2xl font-semibold tracking-tight"
-        data-testid={`stat-${title}`}
-      >
+      <p className="tabular mt-1 text-2xl font-medium" data-testid={`stat-${title}`}>
         {value}
       </p>
       {note && <p className="mt-0.5 text-xs text-ink-3">{note}</p>}
@@ -50,13 +49,49 @@ function Stat({
   );
 }
 
+/** Related figures share one panel. Width follows the count, so rows always fill without a gap. */
+function StatGroup({ count, children }: { count: number; children: ReactNode }) {
+  return (
+    <div
+      className="grid min-w-0 grid-cols-[repeat(auto-fit,minmax(136px,1fr))] gap-px overflow-hidden rounded-xl border border-line bg-line shadow-card max-sm:[&>:last-child:nth-child(odd)]:col-span-full"
+      style={{ flex: `${count} 1 ${count * 160}px` }}
+    >
+      {children}
+    </div>
+  );
+}
+
+/** Names the selected period, with the year quiet. Ranges without one name stay "Dashboard". */
+function periodTitle(preset: string, from: string | undefined, timeZone: string): ReactNode {
+  if (!from) return "Dashboard";
+  const part = (options: Intl.DateTimeFormatOptions) =>
+    new Intl.DateTimeFormat("en-GB", { timeZone, ...options }).format(new Date(from));
+  const year = part({ year: "numeric" });
+  const named =
+    preset === "this_month" || preset === "last_month"
+      ? part({ month: "long" })
+      : preset === "today"
+        ? part({ day: "numeric", month: "long" })
+        : null;
+  if (preset === "this_year") return <span className="text-4xl font-normal">{year}</span>;
+  if (!named) return "Dashboard";
+  return (
+    <span className="text-4xl font-normal">
+      {named} <span className="text-ink-3">{year}</span>
+    </span>
+  );
+}
+
+const MONEY_CELL =
+  "flex justify-between gap-3 px-4 py-2 text-right before:text-ink-2 before:content-[attr(data-label)]";
+
 const toRows = (rows: CountRow[] | undefined) =>
   (rows ?? []).map((r) => ({ label: label(r.key), value: r.count }));
 const plainRows = (rows: CountRow[] | undefined) =>
   (rows ?? []).map((r) => ({ label: r.key, value: r.count }));
 
 export default function DashboardPage() {
-  const { preferences, me } = useMe();
+  const { preferences } = useMe();
   const format = useFormat();
   const [range, setRange] = useState<RangeValue>({ preset: "this_month", from: "", to: "" });
   const [chosenCurrency, setChosenCurrency] = useState("");
@@ -86,21 +121,27 @@ export default function DashboardPage() {
   if (error && !data) return <ErrorState error={error} onRetry={refetch} />;
 
   const { leads, clients, projects, tasks, proposals } = data ?? {};
-  const leadRows = (leads?.overTime ?? []).map((r) => ({ label: r.period, value: r.count }));
-  const revenueRows = (finance?.revenueOverTime ?? [])
-    .filter((r) => r.currency === currency)
-    .map((r) => ({ label: r.period, value: minorToMajorForChart(r.amount) }));
+  const leadRows = (leads?.overTime ?? []).map((r) => ({
+    label: periodLabel(r.period),
+    value: r.count,
+  }));
+  const revenue = (finance?.revenueOverTime ?? []).filter((r) => r.currency === currency);
+  const revenueRows = revenue.map((r) => ({
+    label: periodLabel(r.period),
+    value: minorToMajorForChart(r.amount),
+  }));
+  const headline = finance?.byCurrency.find((row) => row.currency === currency);
   const serviceRows = (finance?.revenueByService ?? [])
     .filter((r) => r.currency === currency)
     .slice(0, 8)
     .map((r) => ({ label: r.service, value: minorToMajorForChart(r.amount) }));
-  const firstName = me?.user.name.split(" ")[0];
+  const smallChart = "flex-[1_1_20rem]";
 
   return (
     <>
       <PageHeader
-        title={firstName ? `Welcome back, ${firstName}` : "Dashboard"}
-        description="Period filters apply to new leads, proposals, revenue and charts. Totals are current."
+        title={periodTitle(range.preset, data?.range.from, preferences.timezone)}
+        description="Period filter applies to new leads, proposals, revenue and charts, totals stay current"
         actions={<RangeFilter value={range} onChange={setRange} />}
       />
       {isLoading ? (
@@ -111,98 +152,83 @@ export default function DashboardPage() {
         </div>
       ) : (
         <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6">
-            {leads && <Stat title="Total leads" value={leads.total} href="/leads" />}
-            {leads && <Stat title="New leads" value={leads.newInRange} note="In this period" />}
-            {leads && <Stat title="Active leads" value={leads.active} href="/pipeline" />}
+          {finance && (
+            <div className="grid gap-4 lg:grid-cols-3">
+              <section className="rounded-xl border border-line bg-surface p-6 shadow-card">
+                <h2 className="text-[13px] text-ink-2">Collected</h2>
+                <p className="tabular mt-2 text-4xl font-normal">
+                  {formatMoney(headline?.collected, currency)}
+                </p>
+                <p className="mt-2 text-xs text-ink-3">In this period</p>
+              </section>
+              <section className="relative overflow-hidden sm:min-h-44 rounded-xl border border-line bg-surface p-6 shadow-card lg:col-span-2">
+                <h2 className="text-[13px] text-ink-2">Outstanding</h2>
+                <p className="tabular mt-2 text-4xl font-normal">
+                  {formatMoney(headline?.outstanding, currency)}
+                </p>
+                <p className="mt-2 text-xs text-ink-3">As of today</p>
+                <InvoiceSheet invoice={finance.openInvoices.find((i) => i.currency === currency)} />
+              </section>
+            </div>
+          )}
+
+          <div className="flex flex-wrap gap-3">
             {leads && (
-              <Stat title="Overdue follow-ups" value={leads.overdueFollowUps} href="/leads" />
+              <StatGroup count={4}>
+                <Stat title="Total leads" value={leads.total} href="/leads" />
+                <Stat title="New leads" value={leads.newInRange} note="In this period" />
+                <Stat title="Active leads" value={leads.active} href="/pipeline" />
+                <Stat title="Overdue follow-ups" value={leads.overdueFollowUps} href="/leads" />
+              </StatGroup>
             )}
-            {clients && <Stat title="Total clients" value={clients.total} href="/clients" />}
-            {clients && <Stat title="Active clients" value={clients.active} />}
-            {projects && <Stat title="Active projects" value={projects.active} href="/projects" />}
-            {projects && <Stat title="Completed projects" value={projects.completed} />}
-            {tasks && (
-              <Stat
-                title="Pending tasks"
-                value={tasks.pending}
-                note={tasks.overdue ? `${tasks.overdue} overdue` : undefined}
-                href="/tasks"
-              />
+            {clients && (
+              <StatGroup count={2}>
+                <Stat title="Total clients" value={clients.total} href="/clients" />
+                <Stat title="Active clients" value={clients.active} />
+              </StatGroup>
+            )}
+            {(projects || tasks) && (
+              <StatGroup count={(projects ? 2 : 0) + (tasks ? 1 : 0)}>
+                {projects && (
+                  <Stat title="Active projects" value={projects.active} href="/projects" />
+                )}
+                {projects && <Stat title="Completed projects" value={projects.completed} />}
+                {tasks && (
+                  <Stat
+                    title="Pending tasks"
+                    value={tasks.pending}
+                    note={tasks.overdue ? `${tasks.overdue} overdue` : undefined}
+                    href="/tasks"
+                  />
+                )}
+              </StatGroup>
             )}
             {proposals && (
-              <Stat
-                title="Proposals sent"
-                value={proposals.sent}
-                note="In this period"
-                href="/proposals"
-              />
-            )}
-            {proposals && (
-              <Stat
-                title="Proposal conversion"
-                value={`${proposals.conversionRate}%`}
-                note={`${proposals.accepted} accepted`}
-              />
+              <StatGroup count={2}>
+                <Stat
+                  title="Proposals sent"
+                  value={proposals.sent}
+                  note="In this period"
+                  href="/proposals"
+                />
+                <Stat
+                  title="Proposal conversion"
+                  value={`${proposals.conversionRate}%`}
+                  note={`${proposals.accepted} accepted`}
+                />
+              </StatGroup>
             )}
           </div>
 
           {finance && (
-            <Card title="Revenue by currency" padded={false}>
-              {finance.byCurrency.length ? (
-                <div className="overflow-x-auto">
-                  <table className="tabular w-full text-[13px]" data-testid="finance-table">
-                    <thead className="border-b border-line text-xs text-ink-3">
-                      <tr>
-                        <th className="px-4 py-2 text-left font-medium">Currency</th>
-                        <th className="px-4 text-right font-medium">Invoiced (period)</th>
-                        <th className="px-4 text-right font-medium">Collected (period)</th>
-                        <th className="px-4 text-right font-medium">Outstanding (today)</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {finance.byCurrency.map((row) => (
-                        <tr
-                          key={row.currency}
-                          className="border-b border-line last:border-0"
-                          data-currency={row.currency}
-                        >
-                          <td className="px-4 py-2 font-medium">{row.currency}</td>
-                          <td className="whitespace-nowrap px-4 text-right">
-                            {formatMoney(row.invoiced, row.currency)}
-                          </td>
-                          <td className="whitespace-nowrap px-4 text-right">
-                            {formatMoney(row.collected, row.currency)}
-                          </td>
-                          <td className="whitespace-nowrap px-4 text-right">
-                            {formatMoney(row.outstanding, row.currency)}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              ) : (
-                <p className="px-4 py-6 text-center text-ink-2">No issued invoices yet</p>
-              )}
-              <p className="border-t border-line px-4 py-2 text-xs text-ink-3">
-                Currencies are never added together, as no exchange rate is configured.
-              </p>
-            </Card>
-          )}
-
-          <div className="grid gap-4 lg:grid-cols-2">
-            {leads && (
-              <ChartCard title="Lead generation" rows={leadRows} valueHeader="Leads">
-                <TimeColumns rows={leadRows} />
-              </ChartCard>
-            )}
-            {finance && (
+            <div className="grid gap-4 lg:grid-cols-3">
               <ChartCard
+                className="lg:col-span-2"
                 title="Revenue collected"
                 rows={revenueRows}
                 format={money}
                 valueHeader="Collected"
+                height={320}
                 action={
                   <CurrencySelect
                     currencies={currencies}
@@ -213,36 +239,108 @@ export default function DashboardPage() {
               >
                 <TimeArea rows={revenueRows} format={money} />
               </ChartCard>
+              <Card title="Revenue by currency" padded={false}>
+                {finance.byCurrency.length ? (
+                  <table
+                    role="table"
+                    className="tabular block w-full text-[13px]"
+                    data-testid="finance-table"
+                  >
+                    <thead role="rowgroup" className="sr-only">
+                      <tr role="row">
+                        <th role="columnheader">Currency</th>
+                        <th role="columnheader">Invoiced (period)</th>
+                        <th role="columnheader">Collected (period)</th>
+                        <th role="columnheader">Outstanding (today)</th>
+                      </tr>
+                    </thead>
+                    <tbody role="rowgroup" className="block divide-y divide-line">
+                      {finance.byCurrency.map((row) => (
+                        <tr
+                          key={row.currency}
+                          role="row"
+                          className="block py-1"
+                          data-currency={row.currency}
+                        >
+                          <td role="cell" className="block px-4 py-2 font-medium">
+                            {row.currency}
+                          </td>
+                          <td role="cell" className={MONEY_CELL} data-label="Invoiced (period)">
+                            {formatMoney(row.invoiced, row.currency)}
+                          </td>
+                          <td role="cell" className={MONEY_CELL} data-label="Collected (period)">
+                            {formatMoney(row.collected, row.currency)}
+                          </td>
+                          <td role="cell" className={MONEY_CELL} data-label="Outstanding (today)">
+                            {formatMoney(row.outstanding, row.currency)}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                ) : (
+                  <p className="px-4 py-6 text-center text-ink-2">No issued invoices yet</p>
+                )}
+                <p className="border-t border-line px-4 py-2 text-xs text-ink-3">
+                  Currencies are never added together, as no exchange rate is configured
+                </p>
+              </Card>
+            </div>
+          )}
+
+          <div className="flex flex-wrap gap-4">
+            {leads && (
+              <ChartCard
+                className={smallChart}
+                title="Lead generation"
+                rows={leadRows}
+                valueHeader="Leads"
+                height={220}
+              >
+                <TimeColumns rows={leadRows} />
+              </ChartCard>
             )}
             {leads && (
-              <ChartCard title="Leads by source" rows={toRows(leads.bySource)} valueHeader="Leads">
+              <ChartCard
+                className={smallChart}
+                title="Leads by source"
+                rows={toRows(leads.bySource)}
+                valueHeader="Leads"
+                height={220}
+              >
                 <RankedBars rows={toRows(leads.bySource)} />
               </ChartCard>
             )}
             {leads && (
               <ChartCard
+                className={smallChart}
                 title="Leads by country"
                 rows={plainRows(leads.byCountry)}
                 valueHeader="Leads"
+                height={220}
               >
                 <RankedBars rows={plainRows(leads.byCountry)} />
               </ChartCard>
             )}
             {projects && (
               <ChartCard
+                className={smallChart}
                 title="Projects by status"
                 rows={toRows(projects.statusDistribution)}
                 valueHeader="Projects"
+                height={220}
               >
                 <RankedBars rows={toRows(projects.statusDistribution)} />
               </ChartCard>
             )}
             {finance && (
               <ChartCard
+                className={smallChart}
                 title="Invoiced by service"
                 rows={serviceRows}
                 format={money}
                 valueHeader="Invoiced"
+                height={220}
                 action={
                   <CurrencySelect
                     currencies={currencies}
@@ -352,6 +450,7 @@ export default function DashboardPage() {
                           href={`/projects/${p._id}`}
                           className="min-w-0 truncate hover:underline"
                         >
+                          <span className="font-mono text-xs text-ink-2">{p.code}</span>{" "}
                           <span className="font-medium">{p.name}</span>{" "}
                           <span className="text-xs text-ink-3">{p.client?.name}</span>
                         </Link>
@@ -377,7 +476,7 @@ export default function DashboardPage() {
                           href={`/invoices/${i._id}`}
                           className="min-w-0 truncate hover:underline"
                         >
-                          <span className="font-medium">{i.number}</span>{" "}
+                          <span className="font-mono text-xs font-medium">{i.number}</span>{" "}
                           <span className="text-xs text-ink-3">{i.client?.name}</span>
                         </Link>
                         <span className="flex items-center gap-2">

@@ -99,7 +99,7 @@ export default function ClientDetailPage() {
       render: (p) => (
         <div>
           <p className="font-medium">{p.name}</p>
-          <p className="text-xs text-ink-3">{p.code}</p>
+          <p className="font-mono text-xs text-ink-3">{p.code}</p>
         </div>
       ),
     },
@@ -119,7 +119,7 @@ export default function ClientDetailPage() {
     {
       key: "number",
       header: "Number",
-      render: (p) => <span className="font-medium">{p.number}</span>,
+      render: (p) => <span className="font-mono text-xs font-medium">{p.number}</span>,
     },
     { key: "title", header: "Title", render: (p) => p.title },
     { key: "status", header: "Status", render: (p) => <StatusBadge status={p.status} /> },
@@ -134,7 +134,7 @@ export default function ClientDetailPage() {
     {
       key: "number",
       header: "Number",
-      render: (i) => <span className="font-medium">{i.number}</span>,
+      render: (i) => <span className="font-mono text-xs font-medium">{i.number}</span>,
     },
     { key: "status", header: "Status", render: (i) => <StatusBadge status={i.status} /> },
     { key: "due", header: "Due", render: (i) => format.day(i.dueDate) },
@@ -156,7 +156,10 @@ export default function ClientDetailPage() {
     {
       key: "invoice",
       header: "Invoice",
-      render: (p) => typeof p.invoice === "object" && p.invoice.number,
+      render: (p) =>
+        typeof p.invoice === "object" && (
+          <span className="font-mono text-xs">{p.invoice.number}</span>
+        ),
     },
     { key: "method", header: "Method", render: (p) => label(p.method) },
     { key: "ref", header: "Reference", render: (p) => p.transactionReference },
@@ -228,14 +231,12 @@ export default function ClientDetailPage() {
       <div className="mb-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <Card>
           <p className="text-xs text-ink-3">Total projects</p>
-          <p className="tabular mt-1 text-2xl font-semibold">
-            {client.summary?.totalProjects ?? 0}
-          </p>
+          <p className="tabular mt-1 text-3xl font-medium">{client.summary?.totalProjects ?? 0}</p>
           <p className="text-xs text-ink-2">{client.summary?.activeProjects ?? 0} active</p>
         </Card>
         <Card>
           <p className="text-xs text-ink-3">Last interaction</p>
-          <p className="mt-1 text-base font-semibold">
+          <p className="mt-1 text-base font-medium">
             {format.date(client.lastInteractionAt) || "None"}
           </p>
         </Card>

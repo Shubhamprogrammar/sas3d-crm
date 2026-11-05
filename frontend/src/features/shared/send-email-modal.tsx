@@ -58,7 +58,7 @@ export function SendEmailModal({
             {failure}
           </p>
         )}
-        <FormField label="Recipient" hint="The PDF is attached.">
+        <FormField label="Recipient" hint="The PDF is attached">
           {(f) => <Input {...f} type="email" value={to} onChange={(e) => setTo(e.target.value)} />}
         </FormField>
       </div>

@@ -37,7 +37,9 @@ export default function ProposalsPage() {
       key: "number",
       header: "Number",
       sortKey: "number",
-      render: (p) => <span className="whitespace-nowrap font-medium">{p.number}</span>,
+      render: (p) => (
+        <span className="whitespace-nowrap font-mono text-xs font-medium">{p.number}</span>
+      ),
     },
     {
       key: "title",

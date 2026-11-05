@@ -159,7 +159,7 @@ export function LeadForm({
         )}
         {duplicates.length > 0 && (
           <div role="alert" className="rounded-lg bg-warn-soft p-3 text-[13px] text-warn">
-            <p className="flex items-center gap-1.5 font-semibold">
+            <p className="flex items-center gap-1.5 font-medium">
               <TriangleAlert className="size-4" aria-hidden />
               Possible duplicate
             </p>

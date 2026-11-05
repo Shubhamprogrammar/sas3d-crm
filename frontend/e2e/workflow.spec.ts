@@ -245,12 +245,12 @@ test("works at phone width without horizontal page scroll", async ({ page }) => 
   await expect(page).toHaveURL(/\/pipeline/);
 });
 
-test("switches and remembers the dark theme", async ({ page }) => {
+test("starts dark, then switches and remembers the light theme", async ({ page }) => {
   await login(page);
-  await page.getByRole("button", { name: "Switch to dark theme" }).click();
-  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  await page.getByRole("button", { name: "Switch to light theme" }).click();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
   await page.reload();
-  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
   await page.goto("/dashboard");
-  await expect(page.getByRole("button", { name: "Switch to light theme" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Switch to dark theme" })).toBeVisible();
 });

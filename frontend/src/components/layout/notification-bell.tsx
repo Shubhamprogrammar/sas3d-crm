@@ -59,7 +59,7 @@ export function NotificationBell() {
         icon={<Bell className="size-4" />}
       >
         {count > 0 && (
-          <span className="tabular absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-bad px-1 text-[10px] font-semibold text-white dark:text-bg">
+          <span className="tabular absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-bad px-1 text-[11px] font-semibold text-white dark:text-bg">
             {count > 99 ? "99+" : count}
           </span>
         )}
@@ -67,7 +67,7 @@ export function NotificationBell() {
       {open && (
         <div className="fixed left-3 right-3 top-14 z-40 rounded-xl border border-line bg-surface shadow-pop sm:absolute sm:left-auto sm:right-0 sm:top-auto sm:mt-1 sm:w-96">
           <div className="flex items-center justify-between border-b border-line px-3 py-2">
-            <span className="font-semibold">Notifications</span>
+            <span className="font-medium">Notifications</span>
             <Button variant="ghost" size="sm" disabled={!count} onClick={() => markAll.mutate()}>
               Mark all read
             </Button>

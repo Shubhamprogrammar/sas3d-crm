@@ -52,7 +52,7 @@ export function TaskCalendar({
   return (
     <div>
       <div className="flex items-center justify-between border-b border-line p-3">
-        <h2 className="font-semibold">{MONTH.format(cursor)}</h2>
+        <h2 className="font-medium">{MONTH.format(cursor)}</h2>
         <div className="flex gap-1">
           <Button
             size="icon"
@@ -95,7 +95,7 @@ export function TaskCalendar({
                 className={`min-h-24 border-b border-r border-line p-1 ${day.getMonth() === cursor.getMonth() ? "" : "bg-surface-2/60"}`}
               >
                 <div
-                  className={`tabular mb-0.5 inline-flex size-5 items-center justify-center rounded-full text-xs ${key(day) === today ? "bg-accent font-semibold text-on-accent" : "text-ink-2"}`}
+                  className={`tabular mb-0.5 inline-flex size-5 items-center justify-center rounded-full text-xs ${key(day) === today ? "bg-accent font-medium text-on-accent" : "text-ink-2"}`}
                 >
                   {day.getDate()}
                 </div>

@@ -32,8 +32,8 @@ function ResetForm() {
   if (!token) {
     return (
       <div className="space-y-3">
-        <h1 className="text-lg font-semibold">This link is not valid</h1>
-        <p className="text-ink-2">It may have expired or already been used.</p>
+        <h1 className="text-xl font-medium">This link is not valid</h1>
+        <p className="text-ink-2">It may have expired or already been used</p>
         <Link href="/forgot-password" className="text-[13px] text-accent hover:underline">
           Request a new link
         </Link>
@@ -43,8 +43,8 @@ function ResetForm() {
   if (done) {
     return (
       <div className="space-y-3">
-        <h1 className="text-lg font-semibold">Password updated</h1>
-        <p className="text-ink-2">You can now sign in with your new password.</p>
+        <h1 className="text-xl font-medium">Password updated</h1>
+        <p className="text-ink-2">You can now sign in with your new password</p>
         <Link href="/login" className="text-[13px] text-accent hover:underline">
           Go to sign in
         </Link>
@@ -61,7 +61,7 @@ function ResetForm() {
 
   return (
     <form onSubmit={submit} noValidate className="space-y-4">
-      <h1 className="text-lg font-semibold">Choose a new password</h1>
+      <h1 className="text-xl font-medium">Choose a new password</h1>
       {error && (
         <p role="alert" className="rounded-lg bg-bad-soft px-3 py-2 text-[13px] text-bad">
           {error}

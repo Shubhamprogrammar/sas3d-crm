@@ -116,7 +116,7 @@ export function ConvertDialog({
       open={Boolean(opportunity)}
       onClose={onClose}
       title="Convert won opportunity"
-      description="Links or creates the client without duplicating records."
+      description="Links or creates the client without duplicating records"
       footer={
         <>
           <Button onClick={onClose}>Not now</Button>

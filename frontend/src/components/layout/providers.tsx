@@ -18,15 +18,15 @@ const ThemeContext = createContext<{ theme: Theme; setTheme: (theme: Theme) => v
 
 export const THEME_KEY = "sas3d-theme";
 
-/** Runs before first paint so that dark-mode users never see a flash of the light theme. */
+/** Runs before first paint so that light-mode users never see a flash of the default dark theme. */
 export const THEME_SCRIPT = `try{var t=localStorage.getItem("${THEME_KEY}");if(t)document.documentElement.dataset.theme=t}catch(e){}`;
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>("light");
+  const [theme, setThemeState] = useState<Theme>("dark");
   useEffect(() => {
     // The attribute is set by THEME_SCRIPT before hydration; this only syncs React state to it.
 
-    setThemeState(document.documentElement.dataset.theme === "dark" ? "dark" : "light");
+    setThemeState(document.documentElement.dataset.theme === "light" ? "light" : "dark");
   }, []);
   const setTheme = useCallback((next: Theme) => {
     setThemeState(next);

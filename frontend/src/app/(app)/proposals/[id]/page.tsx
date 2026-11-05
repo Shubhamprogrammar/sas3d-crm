@@ -84,7 +84,7 @@ export default function ProposalDetailPage() {
         title={proposal.title}
         description={
           <span className="flex flex-wrap items-center gap-2">
-            {proposal.number}
+            <span className="font-mono">{proposal.number}</span>
             <StatusBadge status={status} />
             <span>Revision {proposal.revision}</span>
           </span>
@@ -267,7 +267,7 @@ export default function ProposalDetailPage() {
           ) : !revisions?.length ? (
             <EmptyState
               title="No earlier revisions"
-              description="Each saved edit keeps a copy of the previous version."
+              description="Each saved edit keeps a copy of the previous version"
             />
           ) : (
             <ul className="divide-y divide-line">
@@ -316,7 +316,7 @@ export default function ProposalDetailPage() {
               {
                 label: "Total",
                 value: (
-                  <span className="tabular font-semibold">
+                  <span className="tabular font-medium">
                     {formatMoney(proposal.total, proposal.currency)}
                   </span>
                 ),

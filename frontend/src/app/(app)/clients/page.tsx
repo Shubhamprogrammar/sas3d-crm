@@ -74,7 +74,7 @@ export default function ClientsPage() {
     <>
       <PageHeader
         title="Clients"
-        description="Active relationships and their full history."
+        description="Active relationships and their full history"
         actions={
           can("client:write") && (
             <Button

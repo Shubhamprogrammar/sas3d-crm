@@ -207,7 +207,7 @@ export default function ServicesPage() {
     <>
       <PageHeader
         title="Services"
-        description="The catalogue offered when creating proposals and invoices."
+        description="The catalogue offered when creating proposals and invoices"
         actions={
           can("service:write") && (
             <Button

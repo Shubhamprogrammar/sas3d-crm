@@ -275,7 +275,7 @@ function DocumentsTab({ settings, readOnly }: { settings: Settings; readOnly: bo
       className="max-w-3xl space-y-6"
     >
       <fieldset disabled={readOnly} className="space-y-3">
-        <legend className="mb-2 font-semibold">Proposal template</legend>
+        <legend className="mb-2 font-medium">Proposal template</legend>
         <NumberingFields register={register} kind="proposal" />
         <FormField label="Introduction" hint="Appears at the top of each proposal PDF">
           {(f) => <Textarea {...f} {...register("proposal.introduction")} />}
@@ -288,7 +288,7 @@ function DocumentsTab({ settings, readOnly }: { settings: Settings; readOnly: bo
         </FormField>
       </fieldset>
       <fieldset disabled={readOnly} className="space-y-3">
-        <legend className="mb-2 font-semibold">Invoice template</legend>
+        <legend className="mb-2 font-medium">Invoice template</legend>
         <NumberingFields register={register} kind="invoice" />
         <FormField label="Default payment terms">
           {(f) => <Textarea {...f} {...register("invoice.defaultPaymentTerms")} />}
@@ -442,7 +442,7 @@ function SystemTab() {
                 </Button>
               </div>
             ) : (
-              <p className="text-xs text-ink-3">Only a Super Admin can export data.</p>
+              <p className="text-xs text-ink-3">Only a Super Admin can export data</p>
             )}
           </Card>
         </div>

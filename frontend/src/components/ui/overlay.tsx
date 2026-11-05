@@ -74,7 +74,7 @@ function Header({
   return (
     <div className="flex items-start justify-between gap-4 border-b border-line px-5 py-4">
       <div>
-        <h2 id={titleId} className="text-base font-semibold">
+        <h2 id={titleId} className="text-base font-medium">
           {title}
         </h2>
         {description && <p className="mt-0.5 text-[13px] text-ink-2">{description}</p>}

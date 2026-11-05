@@ -29,7 +29,7 @@ export default function ForgotPasswordPage() {
   if (done) {
     return (
       <div className="space-y-3">
-        <h1 className="text-lg font-semibold">Check your email</h1>
+        <h1 className="text-xl font-medium">Check your email</h1>
         <p className="text-ink-2">
           If an account exists for that address, a reset link is on its way. The link expires in one
           hour.
@@ -46,8 +46,8 @@ export default function ForgotPasswordPage() {
   return (
     <form onSubmit={submit} noValidate className="space-y-4">
       <div>
-        <h1 className="text-lg font-semibold">Reset your password</h1>
-        <p className="text-[13px] text-ink-2">We will email you a link to choose a new one.</p>
+        <h1 className="text-xl font-medium">Reset your password</h1>
+        <p className="text-[13px] text-ink-2">We will email you a link to choose a new one</p>
       </div>
       {error && (
         <p role="alert" className="rounded-lg bg-bad-soft px-3 py-2 text-[13px] text-bad">

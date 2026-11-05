@@ -454,7 +454,7 @@ export default function InvoiceDetailPage() {
       {cancelling && (
         <ReasonModal
           title="Cancel invoice"
-          description="The invoice is kept on record as cancelled."
+          description="The invoice is kept on record as cancelled"
           action="Cancel invoice"
           danger
           loading={cancel.isPending}

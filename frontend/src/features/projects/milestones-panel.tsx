@@ -147,7 +147,7 @@ export function MilestonesPanel({ project, canManage }: { project: string; canMa
         <EmptyState
           icon={Flag}
           title="No milestones yet"
-          description="Milestones count toward project progress."
+          description="Milestones count toward project progress"
         />
       ) : (
         <ul className="divide-y divide-line">

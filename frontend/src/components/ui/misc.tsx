@@ -56,7 +56,7 @@ const STATUS_TONES: Record<string, Tone> = {
 export function StatusBadge({ status, tone }: { status: string; tone?: Tone }) {
   return (
     <span
-      className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-medium ${TONES[tone ?? STATUS_TONES[status] ?? "neutral"]}`}
+      className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-md px-2 py-0.5 text-xs font-medium ${TONES[tone ?? STATUS_TONES[status] ?? "neutral"]}`}
     >
       {label(status)}
     </span>
@@ -72,13 +72,13 @@ export function Avatar({
   image?: string | null;
   size?: "sm" | "md" | "lg";
 }) {
-  const dimension = { sm: "size-6 text-[10px]", md: "size-8 text-xs", lg: "size-14 text-lg" }[size];
+  const dimension = { sm: "size-6 text-[11px]", md: "size-8 text-xs", lg: "size-14 text-lg" }[size];
   return image ? (
     <img src={image} alt="" className={`${dimension} shrink-0 rounded-full object-cover`} />
   ) : (
     <span
       aria-hidden
-      className={`${dimension} inline-flex shrink-0 items-center justify-center rounded-full bg-accent-soft font-semibold text-accent`}
+      className={`${dimension} inline-flex shrink-0 items-center justify-center rounded-full bg-accent-soft font-medium text-accent`}
     >
       {initials(name)}
     </span>
@@ -404,7 +404,7 @@ export function Card({
     <section className={`rounded-xl border border-line bg-surface shadow-card ${className}`}>
       {(title || action) && (
         <header className="flex items-center justify-between gap-3 border-b border-line px-4 py-3">
-          {title && <h2 className="font-semibold">{title}</h2>}
+          {title && <h2 className="font-medium">{title}</h2>}
           {action}
         </header>
       )}
@@ -419,17 +419,17 @@ export function PageHeader({
   actions,
   back,
 }: {
-  title: string;
+  title: ReactNode;
   description?: ReactNode;
   actions?: ReactNode;
   back?: { href: string; label: string };
 }) {
   return (
-    <div className="mb-5">
+    <div className="mb-6">
       {back && (
         <Link
           href={back.href}
-          className="mb-1.5 inline-flex items-center gap-1 text-[13px] text-ink-2 hover:text-ink"
+          className="mb-2 inline-flex items-center gap-1 text-[13px] text-ink-2 hover:text-ink"
         >
           <ChevronLeft className="size-3.5" aria-hidden />
           {back.label}
@@ -437,8 +437,8 @@ export function PageHeader({
       )}
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
-          <h1 className="text-xl font-semibold tracking-tight">{title}</h1>
-          {description && <div className="mt-0.5 text-[13px] text-ink-2">{description}</div>}
+          <h1 className="text-2xl font-medium">{title}</h1>
+          {description && <div className="mt-1 text-[13px] text-ink-2">{description}</div>}
         </div>
         {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
       </div>
@@ -476,7 +476,7 @@ export function ProgressBar({ value }: { value: number }) {
       aria-valuemin={0}
       aria-valuemax={100}
     >
-      <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-neutral-soft">
+      <div className="h-1 flex-1 overflow-hidden rounded-full bg-neutral-soft">
         <div className="h-full rounded-full bg-accent" style={{ width: `${value}%` }} />
       </div>
       <span className="tabular w-9 text-right text-xs text-ink-2">{value}%</span>

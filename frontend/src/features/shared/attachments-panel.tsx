@@ -54,7 +54,7 @@ export function AttachmentsPanel({
     <div>
       {can("attachment:write") && (
         <div className="flex items-center justify-between gap-3 border-b border-line p-3">
-          <p className="text-xs text-ink-3">PDF, images, Office documents, ZIP or text files.</p>
+          <p className="text-xs text-ink-3">PDF, images, Office documents, ZIP or text files</p>
           <input
             ref={input}
             type="file"

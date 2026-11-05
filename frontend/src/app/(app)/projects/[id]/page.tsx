@@ -68,7 +68,7 @@ export default function ProjectDetailPage() {
         title={project.name}
         description={
           <span className="flex flex-wrap items-center gap-2">
-            {project.code}
+            <span className="font-mono">{project.code}</span>
             <StatusBadge status={project.status} />
             <StatusBadge status={project.priority} />
             {overdue && <StatusBadge status="Past delivery date" tone="bad" />}

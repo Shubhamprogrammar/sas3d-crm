@@ -133,7 +133,7 @@ export default function PipelinePage() {
                 ? "No opportunities match these filters"
                 : "The pipeline is empty"
             }
-            description="Each new lead gets a card here automatically."
+            description="Each new lead gets a card here automatically"
             action={
               can("lead:write") ? (
                 <Link className="text-accent hover:underline" href="/leads?new=1">
@@ -165,7 +165,7 @@ export default function PipelinePage() {
             >
               <header className="border-b border-line px-3 py-2.5">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-[13px] font-semibold">{label(column.stage)}</h2>
+                  <h2 className="text-[13px] font-medium">{label(column.stage)}</h2>
                   <span className="tabular text-xs text-ink-3">{column.cards.length}</span>
                 </div>
                 <p className="tabular mt-0.5 min-h-4 text-xs text-ink-2">

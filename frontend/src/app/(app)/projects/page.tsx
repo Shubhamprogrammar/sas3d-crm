@@ -44,7 +44,7 @@ export default function ProjectsPage() {
         <div className="min-w-44">
           <p className="font-medium">{p.name}</p>
           <p className="text-xs text-ink-3">
-            {p.code} · {p.client?.name}
+            <span className="font-mono">{p.code}</span> · {p.client?.name}
           </p>
         </div>
       ),
