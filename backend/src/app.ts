@@ -17,6 +17,7 @@ import { dashboardRoutes } from "./modules/dashboard/routes.js";
 import { invoiceRoutes } from "./modules/invoices/routes.js";
 import { leadRoutes } from "./modules/leads/routes.js";
 import { meRoutes } from "./modules/me/routes.js";
+import { noteRoutes } from "./modules/notes/routes.js";
 import { notificationRoutes } from "./modules/notifications/routes.js";
 import { opportunityRoutes } from "./modules/opportunities/routes.js";
 import { paymentRoutes } from "./modules/payments/routes.js";
@@ -97,6 +98,7 @@ export function createApp() {
   api.use("/services", serviceRoutes);
   api.use("/team", teamRoutes);
   api.use("/reports", reportRoutes);
+  api.use("/notes", noteRoutes);
   api.use("/notifications", notificationRoutes);
   api.use("/settings", settingsRoutes);
   api.use("/attachments", attachmentRoutes);

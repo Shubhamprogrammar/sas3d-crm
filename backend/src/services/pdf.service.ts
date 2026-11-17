@@ -41,7 +41,7 @@ export function formatDocDate(date: Date | null | undefined, format = "DD MMM YY
 
 const bpToPercent = (bp: number) => (bp / 100).toFixed(2).replace(/\.?0+$/, "");
 
-function toBuffer(doc: PDFKit.PDFDocument) {
+export function toBuffer(doc: PDFKit.PDFDocument) {
   return new Promise<Buffer>((resolve, reject) => {
     const chunks: Buffer[] = [];
     doc.on("data", (chunk: Buffer) => chunks.push(chunk));

@@ -4,6 +4,7 @@ import { AuditLog } from "../modules/audit/model.js";
 import { Client } from "../modules/clients/model.js";
 import { Invoice } from "../modules/invoices/model.js";
 import { Lead } from "../modules/leads/model.js";
+import { Note, NoteImage, NoteVersion } from "../modules/notes/model.js";
 import { Notification } from "../modules/notifications/model.js";
 import { Opportunity, StageHistory } from "../modules/opportunities/model.js";
 import { Payment } from "../modules/payments/model.js";
@@ -22,6 +23,9 @@ const ALL_MODELS = [
   Client,
   Invoice,
   Lead,
+  Note,
+  NoteImage,
+  NoteVersion,
   Notification,
   Opportunity,
   StageHistory,

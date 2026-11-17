@@ -128,6 +128,7 @@ export const NOTIFICATION_TYPES = [
   "PROPOSAL_ACCEPTED",
   "INVOICE_OVERDUE",
   "PAYMENT_RECORDED",
+  "NOTE_MENTION",
 ] as const;
 export type NotificationType = (typeof NOTIFICATION_TYPES)[number];
 
@@ -143,5 +144,6 @@ export const RELATED_TYPES = [
   "SERVICE",
   "USER",
   "SETTINGS",
+  "NOTE",
 ] as const;
 export type RelatedType = (typeof RELATED_TYPES)[number];

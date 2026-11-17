@@ -87,6 +87,26 @@ Base URL: `/api/v1`. Sessions use cookies set by Better Auth, so send credential
 | GET, POST | `/tasks` | `view` is `today`, `upcoming` or `overdue`. Also `status`, `priority`, `assignedTo`, `lead`, `client`, `project`, `from`, `to` |
 | GET, PATCH, DELETE | `/tasks/:id` | Read, update, soft delete |
 
+### Notes: `note:*`
+
+Free-standing rich-text notes. A note is visible to its author, plus everyone once `visibility` is `TEAM`. The author edits it; administrators may also edit or delete `TEAM` notes, but only the author changes visibility. `content` is HTML that the server sanitises against the editor's allowlist; `contentText`, mentions and images are derived from it on the server.
+
+| Method | Path | Description |
+|---|---|---|
+| GET, POST | `/notes` | `search` (title, text, tags), `scope` (`all`, `mine`, `team`), `tag`, `pinned`. Pinned first, then most recently edited. Lists omit `content` and truncate `contentText` |
+| GET | `/notes/tags` | Tags across visible notes |
+| GET | `/notes/mentionable?q=` | Active users to @mention (name, image, designation) |
+| GET, PATCH, DELETE | `/notes/:id` | Read, update, soft delete. PATCH accepts `baseUpdatedAt` and returns 409 if the note changed since |
+| PATCH | `/notes/:id/pin` | `{ pinned }`; does not count as an edit |
+| GET | `/notes/:id/pdf` | PDF export |
+| GET | `/notes/:id/versions` | Snapshots taken before each title or content change (latest 50) |
+| GET | `/notes/:id/versions/:versionId` | One snapshot with content |
+| POST | `/notes/:id/versions/:versionId/restore` | Restore; the replaced content becomes a version too |
+| POST | `/notes/images` | Multipart `file`: PNG, JPEG, GIF or WebP up to 5 MB. Returns `src` to embed |
+| GET | `/notes/images/:id` | The uploader, or anyone who can see a note or version using the image |
+
+Mentioning someone in a `TEAM` note sends them one `NOTE_MENTION` notification. Mentions in a private note notify when it is shared.
+
 ### Activities: `activity:*`
 
 | Method | Path | Description |

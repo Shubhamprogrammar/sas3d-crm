@@ -13,6 +13,7 @@ import {
   LogOut,
   Menu,
   Moon,
+  NotebookPen,
   Package,
   Plus,
   Receipt,
@@ -41,6 +42,7 @@ const NAV: { href: string; label: string; icon: LucideIcon; permission: string }
   { href: "/pipeline", label: "Pipeline", icon: KanbanSquare, permission: "opportunity:read" },
   { href: "/clients", label: "Clients", icon: Building2, permission: "client:read" },
   { href: "/tasks", label: "Tasks & Follow-ups", icon: CheckSquare, permission: "task:read" },
+  { href: "/notes", label: "Notes", icon: NotebookPen, permission: "note:read" },
   { href: "/proposals", label: "Proposals", icon: FileText, permission: "proposal:read" },
   { href: "/projects", label: "Projects", icon: FolderKanban, permission: "project:read" },
   { href: "/invoices", label: "Invoices & Payments", icon: Receipt, permission: "invoice:read" },
@@ -93,6 +95,7 @@ function QuickCreate() {
     { label: "New lead", href: "/leads?new=1", icon: Users, hidden: !can("lead:write") },
     { label: "New client", href: "/clients?new=1", icon: Building2, hidden: !can("client:write") },
     { label: "New task", href: "/tasks?new=1", icon: CheckSquare, hidden: !can("task:write") },
+    { label: "New note", href: "/notes?new=1", icon: NotebookPen, hidden: !can("note:write") },
     {
       label: "New proposal",
       href: "/proposals/new",

@@ -5,6 +5,7 @@ import {
   CheckSquare,
   FileText,
   FolderKanban,
+  NotebookPen,
   Receipt,
   Search,
   Users,
@@ -24,6 +25,7 @@ const ICONS: Record<string, LucideIcon> = {
   proposal: FileText,
   invoice: Receipt,
   task: CheckSquare,
+  note: NotebookPen,
 };
 
 export function GlobalSearch() {
@@ -73,7 +75,7 @@ export function GlobalSearch() {
         role="combobox"
         aria-expanded={open && term.length >= 2}
         aria-controls="global-search-results"
-        aria-label="Search leads, clients, projects, proposals, invoices and tasks"
+        aria-label="Search leads, clients, projects, proposals, invoices, tasks and notes"
         placeholder="Search everything"
         value={value}
         onFocus={() => setOpen(true)}

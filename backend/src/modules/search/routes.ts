@@ -14,6 +14,8 @@ import { searchFilter } from "../../utils/query.js";
 import { Client } from "../clients/model.js";
 import { Invoice } from "../invoices/model.js";
 import { Lead } from "../leads/model.js";
+import { Note } from "../notes/model.js";
+import { visibleNotes } from "../notes/service.js";
 import { Project } from "../projects/model.js";
 import { Proposal } from "../proposals/model.js";
 import { Task } from "../tasks/model.js";
@@ -28,7 +30,7 @@ searchRoutes.get("/", async (req, res) => {
   const can = (permission: Parameters<typeof hasPermission>[1]) =>
     hasPermission(actor.role, permission);
 
-  const [leads, clients, projects, proposals, invoices, tasks] = await Promise.all([
+  const [leads, clients, projects, proposals, invoices, tasks, notes] = await Promise.all([
     can("lead:read")
       ? Lead.find({
           $and: [
@@ -74,6 +76,15 @@ searchRoutes.get("/", async (req, res) => {
     can("task:read")
       ? Task.find({ $and: [taskScope(actor), { deletedAt: null }, searchFilter(["title"], q)] })
           .select("title status")
+          .limit(LIMIT)
+          .lean()
+      : [],
+    can("note:read")
+      ? Note.find({
+          $and: [visibleNotes(actor), searchFilter(["title", "contentText", "tags"], q)],
+        })
+          .select("title visibility tags")
+          .sort({ updatedAt: -1 })
           .limit(LIMIT)
           .lean()
       : [],
@@ -127,6 +138,14 @@ searchRoutes.get("/", async (req, res) => {
       subtitle: "",
       status: t.status,
       href: `/tasks?task=${t._id}`,
+    })),
+    ...notes.map((n) => ({
+      type: "note",
+      id: n._id,
+      title: n.title,
+      subtitle: n.tags.map((tag) => `#${tag}`).join(" "),
+      status: n.visibility,
+      href: `/notes?note=${n._id}`,
     })),
   ]);
 });

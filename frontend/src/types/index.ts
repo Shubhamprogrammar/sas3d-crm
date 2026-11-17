@@ -467,3 +467,32 @@ export interface Dashboard {
     actor: UserRef | null;
   }[];
 }
+
+export type NoteVisibility = "PRIVATE" | "TEAM";
+
+export interface Note {
+  _id: string;
+  title: string;
+  /** Server-sanitised HTML; absent from list responses. */
+  content?: string;
+  /** Plain text; truncated to a preview in list responses. */
+  contentText: string;
+  tags: string[];
+  pinned: boolean;
+  visibility: NoteVisibility;
+  images?: string[];
+  createdBy: UserRef | null;
+  updatedBy: UserRef | null;
+  createdAt: string;
+  updatedAt: string;
+  canEdit: boolean;
+}
+
+export interface NoteVersion {
+  _id: string;
+  title: string;
+  content?: string;
+  editedBy: UserRef | null;
+  editedAt: string;
+  createdAt: string;
+}

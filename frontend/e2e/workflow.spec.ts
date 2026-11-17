@@ -225,6 +225,7 @@ test("works at phone width without horizontal page scroll", async ({ page }) => 
     "/leads",
     "/clients",
     "/tasks",
+    "/notes",
     "/proposals",
     "/projects",
     "/invoices",

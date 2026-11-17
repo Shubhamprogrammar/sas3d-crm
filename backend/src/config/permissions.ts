@@ -46,6 +46,8 @@ export const PERMISSIONS = [
   "settings:write",
   "audit:read",
   "data:export",
+  "note:read",
+  "note:write",
 ] as const;
 export type Permission = (typeof PERMISSIONS)[number];
 
@@ -55,6 +57,8 @@ const MATRIX: Record<Role, readonly Permission[]> = {
   ADMIN: PERMISSIONS.filter((p) => p !== "settings:write" && p !== "data:export"),
   SALES: [
     "dashboard:read",
+    "note:read",
+    "note:write",
     "lead:read",
     "lead:write",
     "lead:import",
@@ -81,6 +85,8 @@ const MATRIX: Record<Role, readonly Permission[]> = {
   ],
   PROJECT_MANAGER: [
     "dashboard:read",
+    "note:read",
+    "note:write",
     "client:read",
     "task:read",
     "task:write",
@@ -101,6 +107,8 @@ const MATRIX: Record<Role, readonly Permission[]> = {
   ],
   DEVELOPER: [
     "dashboard:read",
+    "note:read",
+    "note:write",
     "task:read",
     "task:write",
     "activity:read",
@@ -114,6 +122,8 @@ const MATRIX: Record<Role, readonly Permission[]> = {
   ],
   FINANCE: [
     "dashboard:read",
+    "note:read",
+    "note:write",
     "client:read",
     "project:read",
     "task:read",

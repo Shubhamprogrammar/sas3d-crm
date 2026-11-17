@@ -100,3 +100,23 @@ export const splitList = (value: string) =>
     .split(/[,\n]/)
     .map((part) => part.trim())
     .filter(Boolean);
+
+const RELATIVE = new Intl.RelativeTimeFormat("en", { numeric: "auto" });
+const UNITS: [Intl.RelativeTimeFormatUnit, number][] = [
+  ["year", 31_536_000],
+  ["month", 2_592_000],
+  ["week", 604_800],
+  ["day", 86_400],
+  ["hour", 3_600],
+  ["minute", 60],
+];
+
+/** "just now", "5 minutes ago", "yesterday", "3 weeks ago". */
+export function timeAgo(iso: string | null | undefined, now = Date.now()) {
+  if (!iso) return "";
+  const seconds = Math.round((new Date(iso).getTime() - now) / 1000);
+  for (const [unit, size] of UNITS) {
+    if (Math.abs(seconds) >= size) return RELATIVE.format(Math.round(seconds / size), unit);
+  }
+  return "just now";
+}

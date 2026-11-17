@@ -54,7 +54,7 @@ interface OverlayProps {
   open: boolean;
   onClose: () => void;
   title: string;
-  description?: string;
+  description?: ReactNode;
   children: ReactNode;
   footer?: ReactNode;
   width?: string;
@@ -67,7 +67,7 @@ function Header({
   onClose,
 }: {
   title: string;
-  description?: string;
+  description?: ReactNode;
   titleId: string;
   onClose: () => void;
 }) {

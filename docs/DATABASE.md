@@ -53,6 +53,9 @@ Collections and indexes are created at startup by `initDatabase()`.
 | `counters` (Counter) | Document number sequences | | |
 | `joblocks` (JobLock) | Scheduler lock | | |
 | `attachments` (Attachment) | File metadata | `entityType + entityId` | entity + `deletedAt` |
+| `notes` (Note) | Rich-text notes; sanitised HTML plus derived text, mentions and images | `createdBy`, `updatedBy`, `mentions`, `images` | author or visibility + `deletedAt` + pinned + `updatedAt`, `tags`, `images` |
+| `noteversions` (NoteVersion) | Snapshot before each note edit, latest 50 kept | `note`, `editedBy` | `note + createdAt`, `images` |
+| `noteimages` (NoteImage) | Images embedded in notes | `uploadedBy` | |
 
 The `Service` model name refers to the catalogue. Application services are in `src/services/`.
 

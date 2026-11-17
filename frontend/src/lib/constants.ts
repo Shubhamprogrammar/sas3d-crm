@@ -109,6 +109,7 @@ export const NOTIFICATION_TYPES = [
   "PROPOSAL_ACCEPTED",
   "INVOICE_OVERDUE",
   "PAYMENT_RECORDED",
+  "NOTE_MENTION",
 ] as const;
 
 export const RANGE_PRESETS = [
