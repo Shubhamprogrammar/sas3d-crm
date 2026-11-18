@@ -1,6 +1,6 @@
 "use client";
 
-import { Lock, NotebookPen, Pin, PinOff, Plus, Users } from "lucide-react";
+import { Lock, NotebookPen, Pencil, Pin, PinOff, Plus, Users } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import {
@@ -37,14 +37,24 @@ export default function NotesPage() {
   const requested =
     query.get("note") ?? (query.get("new") === "1" && can("note:write") ? "new" : null);
   const [open, setOpen] = useState<string | "new" | null>(requested);
+  const [startEditing, setStartEditing] = useState(false);
   const [lastRequested, setLastRequested] = useState(requested);
   if (requested !== lastRequested) {
     setLastRequested(requested);
-    if (requested) setOpen(requested);
+    if (requested) {
+      setOpen(requested);
+      setStartEditing(false);
+    }
   }
+
+  const openNote = (id: string, edit = false) => {
+    setOpen(id);
+    setStartEditing(edit);
+  };
 
   const close = () => {
     setOpen(null);
+    setStartEditing(false);
     if (query.get("note") || query.get("new")) router.replace(pathname, { scroll: false });
   };
 
@@ -146,7 +156,8 @@ export default function NotesPage() {
             <li key={note._id}>
               <NoteCard
                 note={note}
-                onOpen={() => setOpen(note._id)}
+                onOpen={() => openNote(note._id)}
+                onEdit={() => openNote(note._id, true)}
                 onPin={() => pin.mutate(note)}
                 onTag={(tag) => list.setFilter("tag", tag)}
               />
@@ -169,9 +180,10 @@ export default function NotesPage() {
       <NoteEditor
         open={open !== null}
         noteId={open === "new" ? null : open}
+        startEditing={startEditing}
         onClose={close}
         onCreated={(note) => {
-          setOpen(note._id);
+          openNote(note._id);
           if (query.get("new")) router.replace(pathname, { scroll: false });
         }}
       />
@@ -182,11 +194,13 @@ export default function NotesPage() {
 function NoteCard({
   note,
   onOpen,
+  onEdit,
   onPin,
   onTag,
 }: {
   note: Note;
   onOpen: () => void;
+  onEdit: () => void;
   onPin: () => void;
   onTag: (tag: string) => void;
 }) {
@@ -253,6 +267,17 @@ function NoteCard({
         <span className="min-w-0 flex-1 truncate" title={format.dateTime(note.updatedAt)}>
           Edited by {editor ?? "unknown"}, {timeAgo(note.updatedAt)}
         </span>
+        {note.canEdit && (
+          <button
+            type="button"
+            onClick={onEdit}
+            aria-label={`Edit ${note.title}`}
+            title="Edit note"
+            className="relative z-10 -m-1 rounded-md p-1 text-ink-3 hover:bg-surface-2 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+          >
+            <Pencil className="size-3.5" aria-hidden />
+          </button>
+        )}
         {note.visibility === "TEAM" ? (
           <span className="inline-flex items-center gap-1" title="Shared with team">
             <Users className="size-3.5" aria-hidden />

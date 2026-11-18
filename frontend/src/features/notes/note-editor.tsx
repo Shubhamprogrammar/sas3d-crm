@@ -6,6 +6,7 @@ import {
   History,
   Lock,
   MoreHorizontal,
+  Pencil,
   Pin,
   PinOff,
   RotateCcw,
@@ -90,11 +91,14 @@ const INVALIDATE = ["/notes", "/search"];
 export function NoteEditor({
   open,
   noteId,
+  startEditing = false,
   onClose,
   onCreated,
 }: {
   open: boolean;
   noteId: string | null;
+  /** Open an existing note straight into edit mode instead of the read-only view. */
+  startEditing?: boolean;
   onClose: () => void;
   onCreated: (note: Note) => void;
 }) {
@@ -116,13 +120,17 @@ export function NoteEditor({
   const [restored, setRestored] = useState<Draft | null>(null);
   const [ready, setReady] = useState(false);
   const [titleError, setTitleError] = useState("");
-  const [confirmClose, setConfirmClose] = useState(false);
+  const [editing, setEditing] = useState(false);
+  /** What a confirmed "discard changes" should do: close the drawer, or go back to viewing. */
+  const [confirmDiscard, setConfirmDiscard] = useState<"close" | "view" | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [history, setHistory] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const loadedFor = useRef<string | null>(null);
 
-  const canEdit = noteId ? Boolean(note?.canEdit) : true;
+  // Existing notes open read-only; the form appears only after "Edit note". New notes start editing.
+  const mayEdit = noteId ? Boolean(note?.canEdit) : true;
+  const canEdit = mayEdit && (!noteId || editing);
   // Administrators may edit a teammate's shared note, but only its author decides who sees it.
   const isAuthor = !note || note.createdBy?._id === me?.user._id;
   const dirty = ready && canEdit && !sameFields(fields, initial);
@@ -136,6 +144,8 @@ export function NoteEditor({
       setFields(start ?? server);
       setBase(updatedAt);
       setRestored(start);
+      // A restored draft means the user was mid-edit, so reopen in edit mode to show it.
+      setEditing(Boolean(start));
       setTitleError("");
       setEditorKey((key) => key + 1);
       setReady(true);
@@ -147,6 +157,7 @@ export function NoteEditor({
     if (!open) {
       loadedFor.current = null;
       setReady(false);
+      setEditing(false);
       return;
     }
     if (!noteId) {
@@ -159,8 +170,9 @@ export function NoteEditor({
     if (note && loadedFor.current !== note._id) {
       loadedFor.current = note._id;
       load(fieldsOf(note), note.updatedAt, note.canEdit);
+      if (startEditing && note.canEdit) setEditing(true);
     }
-  }, [open, noteId, note, load]);
+  }, [open, noteId, note, load, startEditing]);
 
   // Autosave the working copy locally while typing.
   useEffect(() => {
@@ -212,6 +224,7 @@ export function NoteEditor({
       setFields(server);
       setBase(saved.updatedAt);
       setRestored(null);
+      setEditing(false);
     },
     onError: (err) => {
       const titleIssue = err.errors.find((issue) => issue.path === "title");
@@ -243,11 +256,18 @@ export function NoteEditor({
   }
 
   function requestClose() {
-    if (dirty) setConfirmClose(true);
+    if (dirty) setConfirmDiscard("close");
     else {
       clearDraft(noteId);
       onClose();
     }
+  }
+
+  /** Cancel while editing an existing note returns to the read-only view; for a new note it closes. */
+  function cancelEdit() {
+    if (!noteId) return requestClose();
+    if (dirty) setConfirmDiscard("view");
+    else discardDraft();
   }
 
   function discardDraft() {
@@ -340,7 +360,20 @@ export function NoteEditor({
                     : ""}
               </span>
             )}
-            <Button onClick={requestClose}>{canEdit ? "Cancel" : "Close"}</Button>
+            {canEdit ? (
+              <Button onClick={cancelEdit}>Cancel</Button>
+            ) : (
+              <Button onClick={requestClose}>Close</Button>
+            )}
+            {!canEdit && mayEdit && ready && note && (
+              <Button
+                variant="primary"
+                icon={<Pencil className="size-4" />}
+                onClick={() => setEditing(true)}
+              >
+                Edit note
+              </Button>
+            )}
             {canEdit && (
               <Button
                 variant="primary"
@@ -393,7 +426,7 @@ export function NoteEditor({
                   {(f) => (
                     <Input
                       {...f}
-                      autoFocus={!noteId}
+                      autoFocus
                       maxLength={200}
                       value={fields.title}
                       placeholder="e.g. Kick-off call with Acme"
@@ -471,12 +504,16 @@ export function NoteEditor({
       </Drawer>
 
       <ConfirmationDialog
-        open={confirmClose}
-        onClose={() => setConfirmClose(false)}
+        open={confirmDiscard !== null}
+        onClose={() => setConfirmDiscard(null)}
         onConfirm={() => {
-          setConfirmClose(false);
-          clearDraft(noteId);
-          onClose();
+          const action = confirmDiscard;
+          setConfirmDiscard(null);
+          if (action === "view") discardDraft();
+          else {
+            clearDraft(noteId);
+            onClose();
+          }
         }}
         title="Discard unsaved changes?"
         message="Your edits to this note have not been saved. Discarding them cannot be undone."

@@ -54,11 +54,12 @@ test("writes, formats, pins, searches, versions and exports a note", async ({ pa
   await page.screenshot({ path: "test-results/notes-editor.png" });
   await drawer.getByRole("button", { name: "Save" }).click();
   await toast(page, "Note created");
-  await expect(page.getByRole("dialog", { name: "Edit note" })).toBeVisible();
-  await page
-    .getByRole("dialog", { name: "Edit note" })
-    .getByRole("button", { name: "Cancel" })
-    .click();
+  // After saving, the note is shown read-only until "Edit note" is clicked.
+  const view = page.getByRole("dialog", { name: "Note", exact: true });
+  await expect(view).toBeVisible();
+  await expect(view.getByLabel("Title")).toHaveCount(0);
+  await expect(view.getByRole("button", { name: "Edit note" })).toBeVisible();
+  await view.getByRole("button", { name: "Close" }).last().click();
 
   const card = notes().filter({ hasText: "Kick-off with Acme" });
   await expect(card).toContainText("Agenda for Monday");
@@ -73,10 +74,7 @@ test("writes, formats, pins, searches, versions and exports a note", async ({ pa
     .getByRole("button", { name: "Save" })
     .click();
   await toast(page, "Note created");
-  await page
-    .getByRole("dialog", { name: "Edit note" })
-    .getByRole("button", { name: "Cancel" })
-    .click();
+  await view.getByRole("button", { name: "Close" }).last().click();
   await expect(notes().first()).toContainText("Groceries");
   await card.getByRole("button", { name: "Pin Kick-off with Acme" }).click();
   await expect(notes().first()).toContainText("Kick-off with Acme");
@@ -85,13 +83,27 @@ test("writes, formats, pins, searches, versions and exports a note", async ({ pa
   await expect(notes()).toHaveCount(1);
   await page.getByRole("searchbox", { name: "Search notes" }).fill("");
 
-  // Edit to create a version, then look at the history.
+  // Opening a note shows it read-only; cancelling an edit returns to the view.
   await card.getByRole("button", { name: "Kick-off with Acme", exact: true }).click();
+  await expect(view.getByRole("heading", { name: "Kick-off with Acme" })).toBeVisible();
+  await view.getByRole("button", { name: "Edit note" }).click();
   const edit = page.getByRole("dialog", { name: "Edit note" });
+  await edit.getByRole("button", { name: "Cancel" }).click();
+  await expect(view.getByRole("button", { name: "Edit note" })).toBeVisible();
+
+  // Edit to create a version, then look at the history.
+  await view.getByRole("button", { name: "Edit note" }).click();
   await edit.getByLabel("Title").fill("Kick-off with Acme (v2)");
   await edit.getByRole("button", { name: "Save" }).click();
   await toast(page, "Note saved");
-  await edit.getByRole("button", { name: "Note actions" }).click();
+  await expect(view.getByRole("heading", { name: "Kick-off with Acme (v2)" })).toBeVisible();
+  await view.getByRole("button", { name: "Close" }).last().click();
+
+  // The pencil on the card opens the note straight into edit mode.
+  await card.getByRole("button", { name: "Edit Kick-off with Acme (v2)" }).click();
+  await expect(edit.getByLabel("Title")).toHaveValue("Kick-off with Acme (v2)");
+  await edit.getByRole("button", { name: "Cancel" }).click();
+  await view.getByRole("button", { name: "Note actions" }).click();
   await page.getByRole("menuitem", { name: "Version history" }).click();
   const history = page.getByRole("dialog", { name: "Version history" });
   await expect(
@@ -100,19 +112,17 @@ test("writes, formats, pins, searches, versions and exports a note", async ({ pa
   await page.screenshot({ path: "test-results/notes-history.png" });
   await history.getByRole("button", { name: "Close" }).first().click();
 
-  await edit.getByRole("button", { name: "Note actions" }).click();
+  await view.getByRole("button", { name: "Note actions" }).click();
   const download = page.waitForEvent("download");
   await page.getByRole("menuitem", { name: "Download PDF" }).click();
   expect((await download).suggestedFilename()).toBe("Kick-off with Acme v2.pdf");
-  await edit.getByRole("button", { name: "Cancel" }).click();
+  await view.getByRole("button", { name: "Close" }).last().click();
   await page.screenshot({ path: "test-results/notes-list.png" });
 
   // Global search finds notes too.
   await page.getByRole("combobox", { name: /Search leads/ }).fill("Groceries");
   await page.getByRole("option", { name: /Groceries/ }).click();
-  await expect(page.getByRole("dialog", { name: "Edit note" }).getByLabel("Title")).toHaveValue(
-    "Groceries",
-  );
+  await expect(view.getByRole("heading", { name: "Groceries" })).toBeVisible();
 });
 
 test("keeps an unsaved draft across a reload and warns before discarding", async ({ page }) => {
